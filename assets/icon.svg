@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
+   sodipodi:docname="icon.svg"
+   inkscape:export-filename="icon.png"
+   inkscape:export-xdpi="24"
+   inkscape:export-ydpi="24"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="0.85351563"
+     inkscape:cx="94.901601"
+     inkscape:cy="351.48741"
+     inkscape:window-width="1920"
+     inkscape:window-height="1062"
+     inkscape:window-x="0"
+     inkscape:window-y="18"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:export-bgcolor="#ffffff00" />
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient18"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#ff91ff;stop-opacity:1;"
+         offset="0"
+         id="stop18" />
+      <stop
+         style="stop-color:#af00ff;stop-opacity:0.71960169;"
+         offset="0.4521361"
+         id="stop24" />
+      <stop
+         style="stop-color:#84aaff;stop-opacity:0.91509432;"
+         offset="1"
+         id="stop19" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient18"
+       id="linearGradient19"
+       x1="0"
+       y1="256"
+       x2="512"
+       y2="256"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.81314253,0,0,0.81314253,47.835511,47.835511)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient18"
+       id="linearGradient2"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.81314253,0,0,0.81314253,47.83551,47.83551)"
+       x1="0"
+       y1="256"
+       x2="512"
+       y2="256" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient18"
+       id="linearGradient3"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.81314253,0,0,0.81314253,47.83551,47.83551)"
+       x1="0"
+       y1="256"
+       x2="512"
+       y2="256" />
+  </defs>
+  <rect
+     style="display:inline;fill:url(#linearGradient19);fill-opacity:1;fill-rule:evenodd;stroke-width:0.813143"
+     id="rect6"
+     width="416.32898"
+     height="416.32898"
+     x="47.83551"
+     y="47.83551" />
+  <rect
+     style="display:inline;fill:url(#linearGradient2);fill-opacity:1;fill-rule:evenodd;stroke-width:0.813143"
+     id="rect6-2"
+     width="416.32898"
+     height="416.32898"
+     x="47.83551"
+     y="47.83551" />
+  <rect
+     style="display:inline;fill:url(#linearGradient3);fill-opacity:1;fill-rule:evenodd;stroke-width:0.813143"
+     id="rect6-2-2"
+     width="416.32898"
+     height="416.32898"
+     x="47.83551"
+     y="47.83551" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Object">
+    <g
+       id="g2"
+       style="display:inline"
+       transform="rotate(90,312.1609,308.02895)">
+      <rect
+         style="fill:#ffffff;stroke-width:1.0029"
+         id="rect1-0"
+         width="53.175419"
+         height="230.14986"
+         x="-0.60293674"
+         y="-601.50482"
+         transform="rotate(135.32801)" />
+      <rect
+         style="fill:#ffffff;stroke-width:1.0029"
+         id="rect1-5-9"
+         width="53.175419"
+         height="230.14986"
+         x="-424.53036"
+         y="-230.799"
+         transform="rotate(-134.67199)" />
+    </g>
+  </g>
+</svg>

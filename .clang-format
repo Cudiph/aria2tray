@@ -1,0 +1,13 @@
+BasedOnStyle: LLVM
+ColumnLimit: 100
+IndentWidth: 4
+AccessModifierOffset: -4
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignArrayOfStructures: Left
+AlignConsecutiveBitFields: true
+AlignConsecutiveMacros: true
+AlwaysBreakBeforeMultilineStrings: false
+BinPackParameters: false
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: WebKit

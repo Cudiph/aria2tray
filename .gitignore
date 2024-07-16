@@ -1,0 +1,7 @@
+build/
+dist/
+compile_flags.txt
+.cache/
+.gdb_history
+qtsrc
+*.qm
