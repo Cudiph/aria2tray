@@ -136,32 +136,32 @@
 <context>
     <name>Aria2Tray::Window</name>
     <message>
-        <location filename="../win.cpp" line="20"/>
+        <location filename="../win.cpp" line="21"/>
         <source>System tray is not available in this desktop.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="73"/>
+        <location filename="../win.cpp" line="79"/>
         <source>Aria2 not running.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="86"/>
+        <location filename="../win.cpp" line="92"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="91"/>
+        <location filename="../win.cpp" line="97"/>
         <source>Restart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="107"/>
+        <location filename="../win.cpp" line="113"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="108"/>
+        <location filename="../win.cpp" line="114"/>
         <source>Logs</source>
         <translation type="unfinished"></translation>
     </message>

@@ -29,7 +29,7 @@ icon_symlink := usr/share/icons/aria2tray.svg
 install:
 	mkdir -p $(DESTDIR)/$(translations) "$(DESTDIR)/usr/bin/" "$(DESTDIR)/usr/share/applications" "$(DESTDIR)/usr/share/icons"
 	cp $(LINUX_RELEASEDIR)/src/aria2tray $(DESTDIR)/$(bin)
-	cp -r $(LINUX_RELEASEDIR)/src/translations $(DESTDIR)/$(translations)
+	cp -r $(LINUX_RELEASEDIR)/src/ $(DESTDIR)/$(translations)
 	cp assets/aria2tray.desktop $(DESTDIR)/$(desktop_entry)
 	cp assets/icon.svg $(DESTDIR)/$(icon)
 	ln -s /$(icon) $(DESTDIR)/$(icon_symlink)

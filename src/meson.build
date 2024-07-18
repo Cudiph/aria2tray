@@ -34,4 +34,4 @@ message(lup_out.stdout().strip())
 subdir('translations')
 moc_files = qt6.compile_moc(headers: headers, dependencies: qt6_dep)
 
-executable('aria2tray', srcs, moc_files, dependencies: deps)
+executable('aria2tray', srcs, moc_files, dependencies: deps, win_subsystem: 'windows')

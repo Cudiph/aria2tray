@@ -71,9 +71,9 @@ QSystemTrayIcon *Window::createTray()
     trayIcon = new QSystemTrayIcon;
 
 #ifdef Q_OS_WIN32
-    trayIcon->setIcon(QIcon("icon.ico"));
+    trayIcon->setIcon(QIcon(QApplication::applicationDirPath() + u"/icon.ico"_s));
 #else
-    trayIcon->setIcon(QIcon(QStringLiteral(A2T_DATA_DIR) + "/aria2tray.svg"));
+    trayIcon->setIcon(QIcon(QStringLiteral(A2T_DATA_DIR) + u"/aria2tray.svg"_s));
 #endif // Q_OS_WIN32
     trayIcon->setContextMenu(createTrayMenu());
     trayIcon->setToolTip(tr("Aria2 not running."));
