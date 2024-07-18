@@ -2,6 +2,7 @@
 #include <QLibraryInfo>
 #include <QLocale>
 #include <QSettings>
+#include <QStringLiteral>
 #include <QTranslator>
 #include <QtLogging>
 
@@ -20,10 +21,15 @@ int main(int argc, char *argv[])
         app.installTranslator(&qtTranslator);
     }
 
-    QTranslator translator;
-    if (translator.load(u"aria2tray_"_s + QLocale::system().name(),
-                        QApplication::applicationDirPath() % "/translations")) {
-        app.installTranslator(&translator);
+    QTranslator appTranslator;
+#ifdef A2T_DATA_DIR
+    if (appTranslator.load(u"aria2tray_"_s + QLocale::system().name(),
+                           QStringLiteral(A2T_DATA_DIR) + u"/translations"_s)) {
+#else
+    if (appTranslator.load(u"aria2tray_"_s + QLocale::system().name(),
+                           QApplication::applicationDirPath() % "/translations")) {
+#endif // A2T_DATA_DIR
+        app.installTranslator(&appTranslator);
     }
 
     QSettings::setDefaultFormat(QSettings::IniFormat);
