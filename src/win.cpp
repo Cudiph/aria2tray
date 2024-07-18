@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QSettings>
+#include <QStringLiteral>
 #include <QTabBar>
 #include <QVBoxLayout>
 #include <cstdlib>
@@ -68,7 +69,12 @@ void Window::closeEvent(QCloseEvent *event)
 QSystemTrayIcon *Window::createTray()
 {
     trayIcon = new QSystemTrayIcon;
+
+#ifdef Q_OS_WIN32
     trayIcon->setIcon(QIcon("icon.ico"));
+#else
+    trayIcon->setIcon(QIcon(QStringLiteral(A2T_DATA_DIR) + "/aria2tray.svg"));
+#endif // Q_OS_WIN32
     trayIcon->setContextMenu(createTrayMenu());
     trayIcon->setToolTip(tr("Aria2 not running."));
     trayIcon->show();

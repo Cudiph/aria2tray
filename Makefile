@@ -23,7 +23,8 @@ format:
 bin := usr/bin/aria2tray
 translations := usr/share/aria2tray/translations
 desktop_entry := usr/share/applications/aria2tray.desktop
-icon := usr/share/icons/aria2tray.svg
+icon := usr/share/aria2tray/aria2tray.svg
+icon_symlink := usr/share/icons/aria2tray.svg
 
 install:
 	mkdir -p $(DESTDIR)/$(translations) "$(DESTDIR)/usr/bin/" "$(DESTDIR)/usr/share/applications" "$(DESTDIR)/usr/share/icons"
@@ -31,7 +32,8 @@ install:
 	cp -r $(LINUX_RELEASEDIR)/src/translations $(DESTDIR)/$(translations)
 	cp assets/aria2tray.desktop $(DESTDIR)/$(desktop_entry)
 	cp assets/icon.svg $(DESTDIR)/$(icon)
+	ln -s /$(icon) $(DESTDIR)/$(icon_symlink)
 	
 uninstall:
-	rm -f /$(bin) /$(desktop_entry) /$(icon) 
+	rm -f /$(bin) /$(desktop_entry) /$(icon) /$(icon_symlink)
 	rm -rf /$(translations)
