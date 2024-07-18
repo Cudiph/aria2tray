@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Aria2 Tray
+Comment=Run aria2 rpc in the background
+Type=Network
+Exec=aria2tray
+Terminal=false
+Icon=aria2tray
+Version=1.0
+
