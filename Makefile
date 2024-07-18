@@ -26,7 +26,7 @@ desktop_entry := usr/share/applications/aria2tray.desktop
 icon := usr/share/icons/aria2tray.svg
 
 install:
-	mkdir -p $(DESTDIR)/$(translations)
+	mkdir -p $(DESTDIR)/$(translations) "$(DESTDIR)/usr/bin/" "$(DESTDIR)/usr/share/applications" "$(DESTDIR)/usr/share/icons"
 	cp $(LINUX_RELEASEDIR)/src/aria2tray $(DESTDIR)/$(bin)
 	cp -r $(LINUX_RELEASEDIR)/src/translations $(DESTDIR)/$(translations)
 	cp assets/aria2tray.desktop $(DESTDIR)/$(desktop_entry)
