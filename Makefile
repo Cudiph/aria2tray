@@ -20,10 +20,10 @@ format:
 	clang-format src/*.cpp src/*.h -i --verbose
 
 
-bin := /usr/bin/aria2tray
-translations := /usr/share/aria2tray/translations
-desktop_entry := /usr/share/applications/aria2tray.desktop
-icon := /usr/share/icons/aria2tray.svg
+bin := usr/bin/aria2tray
+translations := usr/share/aria2tray/translations
+desktop_entry := usr/share/applications/aria2tray.desktop
+icon := usr/share/icons/aria2tray.svg
 
 install:
 	mkdir -p $(DESTDIR)/$(translations)
@@ -33,5 +33,5 @@ install:
 	cp assets/icon.svg $(DESTDIR)/$(icon)
 	
 uninstall:
-	rm -f $(bin) $(desktop_entry) $(icon) 
-	rm -rf $(translations)
+	rm -f /$(bin) /$(desktop_entry) /$(icon) 
+	rm -rf /$(translations)
