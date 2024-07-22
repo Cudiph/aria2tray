@@ -20,6 +20,7 @@
 
 #include "logs.h"
 #include "process.h"
+#include "qpushbutton.h"
 
 namespace Aria2Tray {
 
@@ -76,6 +77,7 @@ private Q_SLOTS:
     void onStateChange(QProcess::ProcessState state);
     void onStartupChange(Qt::CheckState state);
     void onCertPathClick();
+    void onSaveFolderClick();
 
     void toggleCertPath(Qt::CheckState state);
     void addNewArgs();
@@ -108,6 +110,10 @@ private:
     QLineEdit *certPathEdit;
     QPushButton *certPathButton;
 
+    QWidget *saveFolderLayoutRoot;
+    QLabel *saveFolderLabel;
+    QLineEdit *saveFolderEdit;
+    QPushButton *saveFolderButton;
     QGroupBox *miscGroupBox;
     QCheckBox *certCheck;
     QCheckBox *runOnStartup;

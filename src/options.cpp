@@ -7,16 +7,17 @@ using namespace Qt::Literals::StringLiterals;
 // TODO: set tooltip
 namespace Aria2Tray {
 
-const QString defaultPort        = u"6800"_s;
-const QString defaultRPCSecret   = "";
-const bool defaultExpose         = false;
-const bool defaultUseIpv6        = false;
-const bool defaultSecure         = false;
-const QString defaultCertPath    = "";
-const bool defaultCertCheck      = false;
-const bool defaultRunOnStartup   = false;
-const QStringList defaultCmdArgs = QStringList{
-    "--max-connection-per-server", "16", "--max-connection-per-server", "1M", "-s", "16"};
+const QString defaultPort       = u"6800"_s;
+const QString defaultRPCSecret  = "";
+const bool defaultExpose        = false;
+const bool defaultUseIpv6       = false;
+const bool defaultSecure        = false;
+const QString defaultCertPath   = "";
+const QString defaultSaveFolder = "";
+const bool defaultCertCheck     = false;
+const bool defaultRunOnStartup  = false;
+const QStringList defaultCmdArgs =
+    QStringList{"--max-connection-per-server", "16", "-s", "16", "--min-split-size", "1M"};
 
 Options::Options(QWidget *parent) : QWidget(parent)
 {
@@ -69,7 +70,7 @@ QGroupBox *Options::rpcLayout()
     auto certPathLayout = new QHBoxLayout(certPathLayoutRoot);
     certPathLabel       = new QLabel(tr("Certificate:"), this);
     certPathEdit        = new QLineEdit("", this);
-    certPathButton      = new QPushButton(tr("Browse file"), this);
+    certPathButton      = new QPushButton(tr("Browse..."), this);
     certPathLayout->addWidget(certPathLabel);
     certPathLayout->addWidget(certPathEdit);
     certPathLayout->addWidget(certPathButton);
@@ -89,7 +90,7 @@ QGroupBox *Options::rpcLayout()
     connect(expose, &QCheckBox::checkStateChanged, this, &Options::saveConfig);
     connect(useIpv6, &QCheckBox::checkStateChanged, this, &Options::saveConfig);
     connect(secure, &QCheckBox::checkStateChanged, this, &Options::saveConfig);
-    connect(certPathEdit, &QLineEdit::textChanged, this, &Options::saveConfig);
+    connect(certPathEdit, &QLineEdit::editingFinished, this, &Options::saveConfig);
 
     return rpcGroupBox;
 }
@@ -99,13 +100,24 @@ QGroupBox *Options::miscLayout()
     miscGroupBox = new QGroupBox(tr("Miscellaneous"), this);
     auto vLayout = new QVBoxLayout;
 
+    saveFolderLayoutRoot  = new QWidget(this);
+    auto saveFolderLayout = new QHBoxLayout(saveFolderLayoutRoot);
+    saveFolderLabel       = new QLabel(tr("Default save folder"), this);
+    saveFolderEdit        = new QLineEdit(this);
+    saveFolderButton      = new QPushButton(tr("Browse..."));
+    saveFolderLayout->addWidget(saveFolderLabel);
+    saveFolderLayout->addWidget(saveFolderEdit);
+    saveFolderLayout->addWidget(saveFolderButton);
+    connect(saveFolderButton, &QPushButton::clicked, this, &Options::onSaveFolderClick);
+
     certCheck            = new QCheckBox(tr("Enable ssl certificate check"), this);
-    runOnStartup         = new QCheckBox(tr("Start aria2tray on startup"), this);
+    runOnStartup         = new QCheckBox(tr("Start service on startup"), this);
     cmdlineArgsLabel     = new QLabel(tr("Custom argument:"));
     cmdArgsBuilderWidget = new CmdArgsBuilder(this);
     cmdArgsAddButton     = new QPushButton(tr("+"), this);
 
     vLayout->setAlignment(Qt::AlignTop);
+    vLayout->addWidget(saveFolderLayoutRoot);
     vLayout->addWidget(certCheck);
     vLayout->addWidget(runOnStartup);
     vLayout->addWidget(cmdlineArgsLabel);
@@ -114,6 +126,7 @@ QGroupBox *Options::miscLayout()
     miscGroupBox->setLayout(vLayout);
 
     connect(cmdArgsBuilderWidget, &CmdArgsBuilder::editingFinished, this, &Options::saveConfig);
+    connect(saveFolderEdit, &QLineEdit::editingFinished, this, &Options::saveConfig);
     connect(certCheck, &QCheckBox::checkStateChanged, this, &Options::saveConfig);
     connect(runOnStartup, &QCheckBox::checkStateChanged, this, &Options::saveConfig);
     connect(runOnStartup, &QCheckBox::checkStateChanged, this, &Options::onStartupChange);
@@ -126,8 +139,8 @@ QGridLayout *Options::actionButtonsLayout()
 {
     actionGridLayout = new QGridLayout;
     resetButton      = new QPushButton(tr("Reset to default"), this);
-    stopButton       = new QPushButton(tr("Force stop aria2"), this);
-    startButton      = new QPushButton(tr("Start aria2"), this);
+    stopButton       = new QPushButton(tr("Force stop"), this);
+    startButton      = new QPushButton(tr("START"), this);
     connect(resetButton, &QPushButton::clicked, this, &Options::resetDefault);
     connect(stopButton, &QPushButton::clicked, this, &Options::kill);
     connect(startButton, &QPushButton::clicked, this, &Options::start);
@@ -142,7 +155,6 @@ QGridLayout *Options::actionButtonsLayout()
 void Options::resetDefault()
 {
     portEdit->setText(defaultPort);
-    RPCSecretEdit->setText(defaultRPCSecret);
     expose->setChecked(defaultExpose);
     useIpv6->setChecked(defaultUseIpv6);
     secure->setChecked(defaultSecure);
@@ -199,7 +211,7 @@ void Options::onStateChange(QProcess::ProcessState state)
     switch (state) {
     case QProcess::NotRunning:
         startButton->setEnabled(true);
-        startButton->setText(tr("Start aria2"));
+        startButton->setText(tr("START"));
         connect(startButton, &QPushButton::clicked, this, &Options::start);
         break;
     case QProcess::Starting:
@@ -208,7 +220,7 @@ void Options::onStateChange(QProcess::ProcessState state)
         break;
     case QProcess::Running:
         startButton->setEnabled(true);
-        startButton->setText(tr("Stop aria2"));
+        startButton->setText(tr("STOP"));
         connect(startButton, &QPushButton::clicked, this, &Options::stop);
         break;
     }
@@ -260,6 +272,16 @@ void Options::onCertPathClick()
         QFileDialog::getOpenFileName(this, tr("Pick pkcs12 certificate"), certPathEdit->text(),
                                      tr("PKCS12 certificate (*.p12 *.pfx)"));
     certPathEdit->setText(path);
+    saveConfig();
+}
+
+void Options::onSaveFolderClick()
+{
+    auto path =
+        QFileDialog::getExistingDirectory(this, tr("Pick directory"), saveFolderEdit->text());
+
+    saveFolderEdit->setText(path);
+    saveConfig();
 }
 
 void Options::toggleCertPath(Qt::CheckState state)
@@ -285,6 +307,7 @@ void Options::loadConfig()
     auto savedExpose       = settings.value(u"expose"_s, defaultExpose).toBool();
     auto savedUseIpv6      = settings.value(u"ipv6"_s, defaultUseIpv6).toBool();
     auto savedSecure       = settings.value(u"secure"_s, defaultSecure).toBool();
+    auto savedSaveFolder   = settings.value(u"saveFolder"_s, defaultSaveFolder).toString();
     auto savedCertPath     = settings.value(u"pkcs12Path"_s, defaultCertPath).toString();
     auto savedCertCheck    = settings.value(u"certCheck"_s, defaultCertCheck).toBool();
     auto savedRunOnStartup = settings.value(u"runOnStartup"_s, defaultRunOnStartup).toBool();
@@ -297,6 +320,7 @@ void Options::loadConfig()
     expose->setChecked(savedExpose);
     useIpv6->setChecked(savedUseIpv6);
     secure->setChecked(savedSecure);
+    saveFolderEdit->setText(savedSaveFolder);
     certPathEdit->setText(savedCertPath);
     certCheck->setChecked(savedCertCheck);
     runOnStartup->setChecked(savedRunOnStartup);
@@ -315,6 +339,7 @@ void Options::saveConfig()
     settings.setValue(u"expose"_s, expose->isChecked());
     settings.setValue(u"ipv6"_s, useIpv6->isChecked());
     settings.setValue(u"secure"_s, secure->isChecked());
+    settings.setValue(u"saveFolder"_s, saveFolderEdit->text());
     settings.setValue(u"pkcs12Path"_s, certPathEdit->text());
     settings.setValue(u"certCheck"_s, certCheck->isChecked());
     settings.setValue(u"runOnStartup"_s, runOnStartup->isChecked());
@@ -339,6 +364,10 @@ QStringList Options::buildArgs()
             args += u"--rpc-certificate"_s;
             args += certPathEdit->text().replace(u"'"_s, u"\\'"_s);
         }
+    }
+    if (!saveFolderEdit->text().isEmpty()) {
+        args += u"--dir"_s;
+        args += saveFolderEdit->text();
     }
     if (!certCheck->isChecked())
         args += u"--check-certificate=false"_s;
@@ -390,7 +419,7 @@ CmdArgsBuilder::kvContainer_t *CmdArgsBuilder::appendKVEdit()
     auto layout    = new QGridLayout(base);
     auto key       = new QLineEdit(base);
     auto value     = new QLineEdit(base);
-    auto delButton = new QPushButton("-", base);
+    auto delButton = new QPushButton("—", base);
     delButton->setFixedWidth(50);
     connect(key, &QLineEdit::textChanged, this, &CmdArgsBuilder::onItemTextChanged);
     connect(value, &QLineEdit::textChanged, this, &CmdArgsBuilder::onItemTextChanged);
