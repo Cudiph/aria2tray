@@ -64,7 +64,7 @@ QGroupBox *Options::rpcLayout()
     secure  = new QCheckBox(tr("Encrypt RPC traffic"), this);
     connect(secure, &QCheckBox::checkStateChanged, this, &Options::toggleCertPath);
 
-    certPathLayoutRoot = new QWidget();
+    certPathLayoutRoot = new QWidget(this);
     certPathLayoutRoot->hide();
     auto certPathLayout = new QHBoxLayout(certPathLayoutRoot);
     certPathLabel       = new QLabel(tr("Certificate:"), this);
