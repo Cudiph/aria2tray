@@ -21,6 +21,7 @@ public:
 
 private slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
+    void onStateChange(QProcess::ProcessState state);
     void restart();
 
 protected:

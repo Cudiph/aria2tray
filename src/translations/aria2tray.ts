@@ -147,32 +147,47 @@
 <context>
     <name>Aria2Tray::Window</name>
     <message>
-        <location filename="../win.cpp" line="21"/>
+        <location filename="../win.cpp" line="22"/>
         <source>System tray is not available in this desktop.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="79"/>
-        <source>Aria2 not running.</source>
+        <location filename="../win.cpp" line="61"/>
+        <source>Service isn&apos;t running.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="92"/>
+        <location filename="../win.cpp" line="64"/>
+        <source>Service is starting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../win.cpp" line="67"/>
+        <source>Service is running.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../win.cpp" line="95"/>
+        <source>Service not running.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../win.cpp" line="109"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="97"/>
+        <location filename="../win.cpp" line="114"/>
         <source>Restart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="113"/>
+        <location filename="../win.cpp" line="130"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="114"/>
+        <location filename="../win.cpp" line="131"/>
         <source>Logs</source>
         <translation type="unfinished"></translation>
     </message>

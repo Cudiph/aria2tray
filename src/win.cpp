@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <cstdlib>
 
+#include "process.h"
 #include "win.h"
 
 using namespace Qt::Literals::StringLiterals;
@@ -53,6 +54,21 @@ void Window::iconActivated(QSystemTrayIcon::ActivationReason reason)
     return;
 }
 
+void Window::onStateChange(QProcess::ProcessState state)
+{
+    switch (state) {
+    case QProcess::NotRunning:
+        trayIcon->setToolTip(tr("Service isn't running."));
+        break;
+    case QProcess::Starting:
+        trayIcon->setToolTip(tr("Service is starting..."));
+        break;
+    case QProcess::Running:
+        trayIcon->setToolTip(tr("Service is running."));
+        break;
+    }
+}
+
 void Window::restart()
 {
     options->stop();
@@ -76,10 +92,11 @@ QSystemTrayIcon *Window::createTray()
     trayIcon->setIcon(QIcon(QStringLiteral(A2T_DATA_DIR) + u"/aria2tray.svg"_s));
 #endif // Q_OS_WIN32
     trayIcon->setContextMenu(createTrayMenu());
-    trayIcon->setToolTip(tr("Aria2 not running."));
+    trayIcon->setToolTip(tr("Service not running."));
     trayIcon->show();
 
     connect(trayIcon, &QSystemTrayIcon::activated, this, &Window::iconActivated);
+    connect(Process::instance(), &QProcess::stateChanged, this, &Window::onStateChange);
     return trayIcon;
 }
 
