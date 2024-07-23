@@ -17,129 +17,129 @@
 <context>
     <name>Aria2Tray::Options</name>
     <message>
-        <location filename="../options.cpp" line="45"/>
+        <location filename="../options.cpp" line="46"/>
         <source>RPC Connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="49"/>
+        <location filename="../options.cpp" line="50"/>
         <source>Listening port:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="56"/>
+        <location filename="../options.cpp" line="57"/>
         <source>RPC Secret:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="63"/>
+        <location filename="../options.cpp" line="64"/>
         <source>Expose to network</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="64"/>
+        <location filename="../options.cpp" line="65"/>
         <source>Enable IPv6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="65"/>
+        <location filename="../options.cpp" line="66"/>
         <source>Encrypt RPC traffic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="71"/>
+        <location filename="../options.cpp" line="72"/>
         <source>Certificate:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="73"/>
-        <location filename="../options.cpp" line="107"/>
+        <location filename="../options.cpp" line="74"/>
+        <location filename="../options.cpp" line="108"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="100"/>
+        <location filename="../options.cpp" line="101"/>
         <source>Miscellaneous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="105"/>
+        <location filename="../options.cpp" line="106"/>
         <source>Default save folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="113"/>
+        <location filename="../options.cpp" line="114"/>
         <source>Enable ssl certificate check</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="114"/>
+        <location filename="../options.cpp" line="115"/>
         <source>Start service on startup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="142"/>
+        <location filename="../options.cpp" line="133"/>
+        <source>Additional Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../options.cpp" line="153"/>
         <source>Force stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="143"/>
-        <location filename="../options.cpp" line="214"/>
+        <location filename="../options.cpp" line="154"/>
+        <location filename="../options.cpp" line="225"/>
         <source>START</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="115"/>
-        <source>Custom argument:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../options.cpp" line="117"/>
+        <location filename="../options.cpp" line="137"/>
         <source>+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="141"/>
+        <location filename="../options.cpp" line="152"/>
         <source>Reset to default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="189"/>
+        <location filename="../options.cpp" line="200"/>
         <source>Stopping...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="201"/>
+        <location filename="../options.cpp" line="212"/>
         <source>Force stopping...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="219"/>
+        <location filename="../options.cpp" line="230"/>
         <source>Starting...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="223"/>
+        <location filename="../options.cpp" line="234"/>
         <source>STOP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="272"/>
+        <location filename="../options.cpp" line="283"/>
         <source>Pick pkcs12 certificate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="273"/>
+        <location filename="../options.cpp" line="284"/>
         <source>PKCS12 certificate (*.p12 *.pfx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="281"/>
+        <location filename="../options.cpp" line="292"/>
         <source>Pick directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="360"/>
+        <location filename="../options.cpp" line="371"/>
         <source>Certificate is not found, encryption will be disabled.</source>
         <translation type="unfinished"></translation>
     </message>

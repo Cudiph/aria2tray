@@ -27,6 +27,7 @@ Options::Options(QWidget *parent) : QWidget(parent)
     auto scrollLayout = new QVBoxLayout(scrollWidget);
     scrollLayout->addWidget(rpcLayout());
     scrollLayout->addWidget(miscLayout());
+    scrollLayout->addWidget(cmdArgsLayout());
     scrollArea->setWidget(scrollWidget);
     scrollArea->setWidgetResizable(true);
     rootLayout->addWidget(scrollArea);
@@ -110,29 +111,39 @@ QGroupBox *Options::miscLayout()
     saveFolderLayout->addWidget(saveFolderButton);
     connect(saveFolderButton, &QPushButton::clicked, this, &Options::onSaveFolderClick);
 
-    certCheck            = new QCheckBox(tr("Enable ssl certificate check"), this);
-    runOnStartup         = new QCheckBox(tr("Start service on startup"), this);
-    cmdlineArgsLabel     = new QLabel(tr("Custom argument:"));
-    cmdArgsBuilderWidget = new CmdArgsBuilder(this);
-    cmdArgsAddButton     = new QPushButton(tr("+"), this);
+    certCheck    = new QCheckBox(tr("Enable ssl certificate check"), this);
+    runOnStartup = new QCheckBox(tr("Start service on startup"), this);
 
     vLayout->setAlignment(Qt::AlignTop);
     vLayout->addWidget(saveFolderLayoutRoot);
     vLayout->addWidget(certCheck);
     vLayout->addWidget(runOnStartup);
-    vLayout->addWidget(cmdlineArgsLabel);
-    vLayout->addWidget(cmdArgsBuilderWidget);
-    vLayout->addWidget(cmdArgsAddButton);
     miscGroupBox->setLayout(vLayout);
 
-    connect(cmdArgsBuilderWidget, &CmdArgsBuilder::editingFinished, this, &Options::saveConfig);
     connect(saveFolderEdit, &QLineEdit::editingFinished, this, &Options::saveConfig);
     connect(certCheck, &QCheckBox::checkStateChanged, this, &Options::saveConfig);
     connect(runOnStartup, &QCheckBox::checkStateChanged, this, &Options::saveConfig);
     connect(runOnStartup, &QCheckBox::checkStateChanged, this, &Options::onStartupChange);
-    connect(cmdArgsAddButton, &QPushButton::clicked, this, &Options::addNewArgs);
 
     return miscGroupBox;
+}
+
+QGroupBox *Options::cmdArgsLayout()
+{
+    cmdArgsGroupBox = new QGroupBox(tr("Additional Options"), this);
+    auto vLayout    = new QVBoxLayout;
+
+    cmdArgsBuilderWidget = new CmdArgsBuilder(this);
+    cmdArgsAddButton     = new QPushButton(tr("+"), this);
+
+    vLayout->addWidget(cmdArgsBuilderWidget);
+    vLayout->addWidget(cmdArgsAddButton);
+    cmdArgsGroupBox->setLayout(vLayout);
+
+    connect(cmdArgsBuilderWidget, &CmdArgsBuilder::editingFinished, this, &Options::saveConfig);
+    connect(cmdArgsAddButton, &QPushButton::clicked, this, &Options::addNewArgs);
+
+    return cmdArgsGroupBox;
 }
 
 QGridLayout *Options::actionButtonsLayout()

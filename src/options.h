@@ -85,6 +85,7 @@ private Q_SLOTS:
 private:
     QGroupBox *rpcLayout();
     QGroupBox *miscLayout();
+    QGroupBox *cmdArgsLayout();
     QGridLayout *actionButtonsLayout();
 
     void resetDefault();
@@ -110,14 +111,15 @@ private:
     QLineEdit *certPathEdit;
     QPushButton *certPathButton;
 
+    QGroupBox *miscGroupBox;
     QWidget *saveFolderLayoutRoot;
     QLabel *saveFolderLabel;
     QLineEdit *saveFolderEdit;
     QPushButton *saveFolderButton;
-    QGroupBox *miscGroupBox;
     QCheckBox *certCheck;
     QCheckBox *runOnStartup;
-    QLabel *cmdlineArgsLabel;
+
+    QGroupBox *cmdArgsGroupBox;
     CmdArgsBuilder *cmdArgsBuilderWidget;
     QPushButton *cmdArgsAddButton;
 
