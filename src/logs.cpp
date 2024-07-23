@@ -96,7 +96,8 @@ void Logs::log(const QString &msg, Process::LogLevel level)
         break;
     }
 
-    QTextCursor *cur = new QTextCursor(textbox->document());
+    QTextCursor cur = QTextCursor(textbox->document());
+    cur.movePosition(QTextCursor::End);
     QTextCharFormat stdTextFormat;
     if (fgColor != Qt::transparent)
         stdTextFormat.setForeground(fgColor);
@@ -110,7 +111,6 @@ void Logs::log(const QString &msg, Process::LogLevel level)
         QTextCharFormat ansiTextFormat;
         int startIndex = msg.indexOf(ansiOpen, idxPointer, &matchOpen);
         int endIndex   = msg.indexOf(ansiClose, startIndex);
-        qDebug() << startIndex << idxPointer << endIndex;
 
         if (startIndex >= 0) {
             int ansiBlockLen;
@@ -152,11 +152,11 @@ void Logs::log(const QString &msg, Process::LogLevel level)
                 ansiBlockLen = msg.length();
             }
 
-            cur->insertText(msg.sliced(idxPointer, startIndex - idxPointer), stdTextFormat);
-            cur->insertText(msg.sliced(blockStart, ansiBlockLen), ansiTextFormat);
+            cur.insertText(msg.sliced(idxPointer, startIndex - idxPointer), stdTextFormat);
+            cur.insertText(msg.sliced(blockStart, ansiBlockLen), ansiTextFormat);
             idxPointer = blockStart + ansiBlockLen + ansiClose.pattern().length() - 1;
         } else {
-            cur->insertText(msg.sliced(idxPointer), stdTextFormat);
+            cur.insertText(msg.sliced(idxPointer), stdTextFormat);
             idxPointer = msg.length();
         }
     }
