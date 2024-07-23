@@ -11,6 +11,38 @@
 
 namespace Aria2Tray {
 
+enum AnsiSGR {
+    Reset = 0,
+
+    // Font styling
+    Bold,
+    Faint,
+    Italic,
+    Underline,
+
+    // Foreground color
+    Black = 30,
+    Red,
+    Green,
+    Yellow,
+    Blue,
+    Magenta,
+    Cyan,
+    White,
+
+    // Background
+    BlackBG = 40,
+    RedBG,
+    GreenBG,
+    YellowBG,
+    BlueBG,
+    MagentaBG,
+    CyanBG,
+    WhiteBG,
+};
+
+Qt::GlobalColor ansiSGRtoQtColor(enum AnsiSGR param);
+
 class Logs : public QWidget {
     Q_OBJECT
 
@@ -27,6 +59,7 @@ private:
     QPlainTextEdit *textbox;
     QPushButton *clearButton;
     QGridLayout *buttonGridLayout;
+
     Process *proc;
 };
 
