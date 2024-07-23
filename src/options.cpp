@@ -279,6 +279,9 @@ void Options::addStartup()
         u"XDG_CONFIG_HOME"_s, home + u"/.config/autostart"_s);
 
     auto entry = QFile(u"/usr/share/applications/aria2tray.desktop"_s);
+    if (entry.exists())
+        return;
+
     if (entry.link(userAutostartDir + u"/aria2tray.desktop"_s)) {
         qDebug() << "link created at" << userAutostartDir;
     } else {
@@ -295,6 +298,9 @@ void Options::removeStartup()
                             u"XDG_CONFIG_HOME"_s, home + u"/.config/autostart"_s)
                         + u"/aria2tray.desktop"_s;
     auto entry = QFile(entryPath);
+    if (!entry.exists())
+        return;
+
     if (entry.remove()) {
         qDebug() << "Removed desktop entry symlink at" << entryPath;
     } else {
