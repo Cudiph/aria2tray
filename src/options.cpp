@@ -1,4 +1,7 @@
+#include <QDir>
+#include <QFile>
 #include <QIntValidator>
+#include <QProcessEnvironment>
 
 #include "options.h"
 
@@ -250,7 +253,6 @@ void Options::onStartupChange(Qt::CheckState state)
     }
 }
 
-// TODO: fix logo and publisher and name
 #ifdef Q_OS_WIN32
 const QString REG_KEY = u"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"_s;
 
@@ -259,6 +261,7 @@ void Options::addStartup()
     QSettings settings(REG_KEY, QSettings::NativeFormat);
     settings.setValue(QCoreApplication::applicationName(),
                       '"' + QCoreApplication::applicationFilePath().replace('/', '\\') + '"');
+    start();
 }
 
 void Options::removeStartup()
@@ -269,8 +272,35 @@ void Options::removeStartup()
 
 #elif defined(Q_OS_LINUX)
 
-void Options::addStartup() {}
-void Options::removeStartup() {}
+void Options::addStartup()
+{
+    QString home             = QDir::homePath();
+    QString userAutostartDir = QProcessEnvironment::systemEnvironment().value(
+        u"XDG_CONFIG_HOME"_s, home + u"/.config/autostart"_s);
+
+    auto entry = QFile(u"/usr/share/applications/aria2tray.desktop"_s);
+    if (entry.link(userAutostartDir + u"/aria2tray.desktop"_s)) {
+        qDebug() << "link created at" << userAutostartDir;
+    } else {
+        qCritical() << "failed to create link at" << userAutostartDir;
+    }
+
+    start();
+}
+
+void Options::removeStartup()
+{
+    QString home      = QDir::homePath();
+    QString entryPath = QProcessEnvironment::systemEnvironment().value(
+                            u"XDG_CONFIG_HOME"_s, home + u"/.config/autostart"_s)
+                        + u"/aria2tray.desktop"_s;
+    auto entry = QFile(entryPath);
+    if (entry.remove()) {
+        qDebug() << "Removed desktop entry symlink at" << entryPath;
+    } else {
+        qCritical() << "Failed to remove symlink at" << entryPath;
+    }
+}
 
 #else
 void Options::addStartup() {}
