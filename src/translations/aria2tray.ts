@@ -89,7 +89,7 @@
     </message>
     <message>
         <location filename="../options.cpp" line="157"/>
-        <location filename="../options.cpp" line="228"/>
+        <location filename="../options.cpp" line="244"/>
         <source>START</source>
         <translation type="unfinished"></translation>
     </message>
@@ -104,42 +104,42 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="203"/>
+        <location filename="../options.cpp" line="204"/>
         <source>Stopping...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="215"/>
+        <location filename="../options.cpp" line="220"/>
         <source>Force stopping...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="233"/>
+        <location filename="../options.cpp" line="249"/>
         <source>Starting...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="237"/>
+        <location filename="../options.cpp" line="253"/>
         <source>STOP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="313"/>
+        <location filename="../options.cpp" line="336"/>
         <source>Pick pkcs12 certificate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="314"/>
+        <location filename="../options.cpp" line="337"/>
         <source>PKCS12 certificate (*.p12 *.pfx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="322"/>
+        <location filename="../options.cpp" line="345"/>
         <source>Pick directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="401"/>
+        <location filename="../options.cpp" line="424"/>
         <source>Certificate is not found, encryption will be disabled.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -167,28 +167,36 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="95"/>
+        <location filename="../win.cpp" line="105"/>
         <source>Service not running.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="109"/>
+        <location filename="../win.cpp" line="119"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="114"/>
+        <location filename="../win.cpp" line="124"/>
         <source>Restart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="130"/>
+        <location filename="../win.cpp" line="140"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="131"/>
+        <location filename="../win.cpp" line="141"/>
         <source>Logs</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>main</name>
+    <message>
+        <location filename="../main.cpp" line="55"/>
+        <source>Hide main windows when opening</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

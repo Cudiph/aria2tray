@@ -153,14 +153,15 @@ QGridLayout *Options::actionButtonsLayout()
 {
     actionGridLayout = new QGridLayout;
     resetButton      = new QPushButton(tr("Reset to default"), this);
-    stopButton       = new QPushButton(tr("Force stop"), this);
+    forceStopButton  = new QPushButton(tr("Force stop"), this);
     startButton      = new QPushButton(tr("START"), this);
     connect(resetButton, &QPushButton::clicked, this, &Options::resetDefault);
-    connect(stopButton, &QPushButton::clicked, this, &Options::kill);
+    connect(forceStopButton, &QPushButton::clicked, this, &Options::kill);
+    connect(forceStopButton, &QPushButton::clicked, this, &Options::killOthersAria2);
     connect(startButton, &QPushButton::clicked, this, &Options::start);
 
     actionGridLayout->addWidget(resetButton, 0, 0);
-    actionGridLayout->addWidget(stopButton, 0, 1);
+    actionGridLayout->addWidget(forceStopButton, 0, 1);
     actionGridLayout->addWidget(startButton, 1, 0, 1, 2);
 
     return actionGridLayout;
@@ -203,10 +204,14 @@ void Options::stop()
     startButton->setText(tr("Stopping..."));
     startButton->setDisabled(true);
     qDebug() << "Stopping aria2...";
+#ifdef Q_OS_WIN32
+    proc->kill();
+#else
     proc->terminate();
+#endif // Q_OS_WIN32
 }
 
-void Options::stopWait() { proc->waitForFinished(); }
+void Options::stopWait(int msecs) { proc->waitForFinished(msecs); }
 
 void Options::kill()
 {
@@ -216,6 +221,17 @@ void Options::kill()
     startButton->setDisabled(true);
     qDebug() << "Force stopping aria2...";
     proc->kill();
+}
+
+void Options::killOthersAria2()
+{
+#ifdef Q_OS_WIN32
+    QProcess::execute("taskkill", QStringList() << "/F"
+                                                << "/IM"
+                                                << "aria2c.exe");
+#else
+    QProcess::execute("pkill", QStringList() << "aria2c");
+#endif // Q_OS_WIN32
 }
 
 void Options::onStateChange(QProcess::ProcessState state)
@@ -260,7 +276,8 @@ void Options::addStartup()
 {
     QSettings settings(REG_KEY, QSettings::NativeFormat);
     settings.setValue(QCoreApplication::applicationName(),
-                      '"' + QCoreApplication::applicationFilePath().replace('/', '\\') + '"');
+                      '"' + QCoreApplication::applicationFilePath().replace('/', '\\')
+                          + "\" --hide-window");
     start();
 }
 
@@ -454,7 +471,6 @@ QValidator::State QRPCSecretValidator::validate(QString &input, int &pos) const
 
 CmdArgsBuilder::CmdArgsBuilder(QWidget *parent) : QWidget(parent)
 {
-    // TODO: add sorta table header
     rootLayout = new QVBoxLayout;
     rootLayout->setSpacing(-20);
     setLayout(rootLayout);

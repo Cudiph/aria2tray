@@ -70,8 +70,9 @@ public:
     QStringList buildArgs();
     void start();
     void stop();
-    void stopWait();
+    void stopWait(int msecs = 30000);
     void kill();
+    void killOthersAria2();
 
 private Q_SLOTS:
     void onStateChange(QProcess::ProcessState state);
@@ -126,7 +127,7 @@ private:
     QGridLayout *actionGridLayout;
     QPushButton *resetButton;
     QPushButton *startButton;
-    QPushButton *stopButton;
+    QPushButton *forceStopButton;
 
     Process *proc;
 };
