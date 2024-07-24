@@ -81,8 +81,9 @@ Logs::~Logs() {}
 
 void Logs::log(const QString &msg, Process::LogLevel level)
 {
-    // TODO: set color and address ansi escape code
     Qt::GlobalColor fgColor = Qt::transparent;
+    if (msg.trimmed().isEmpty())
+        return;
 
     switch (level) {
     case Process::Critical:
