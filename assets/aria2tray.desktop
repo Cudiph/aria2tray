@@ -2,7 +2,7 @@
 Name=Aria2 Tray
 Comment=Run aria2 rpc in the background
 Type=Network
-Exec=aria2tray
+Exec=aria2tray --hide-window
 Terminal=false
 Icon=aria2tray
 Version=1.0
