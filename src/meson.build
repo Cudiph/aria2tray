@@ -20,7 +20,6 @@ languages = [ 'en', 'id' ]
 ts_files = ['aria2tray.ts']
 ts_files_full = ['translations/aria2tray.ts']
 
-
 foreach lang : languages
   ts_file = 'aria2tray_' + lang + '.ts'
   ts_files += ts_file
@@ -34,4 +33,12 @@ message(lup_out.stdout().strip())
 subdir('translations')
 moc_files = qt6.compile_moc(headers: headers, dependencies: qt6_dep)
 
-executable('aria2tray', srcs, moc_files, dependencies: deps, win_subsystem: 'windows')
+
+if target_machine.system() == 'windows'
+  win = import('windows')
+  win_res =  win.compile_resources('../resource.rc', depend_files: '../assets/icon.ico')
+  executable('aria2tray', srcs, moc_files, win_res, dependencies: deps, win_subsystem: 'windows')
+else
+  executable('aria2tray', srcs, moc_files, dependencies: deps)
+endif
+

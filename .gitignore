@@ -5,3 +5,5 @@ compile_flags.txt
 .gdb_history
 qtsrc
 *.qm
+*.obj
+*.res
