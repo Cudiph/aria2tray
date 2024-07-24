@@ -15,6 +15,7 @@ using namespace Qt::Literals::StringLiterals;
 
 int main(int argc, char *argv[])
 {
+    const QString KEY = u"nPABAaUkVyDiQjBfhWfmTFvb"_s;
     QApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(false);
     app.setOrganizationName("Aria2Tray");
@@ -23,7 +24,7 @@ int main(int argc, char *argv[])
 
     // client
     QLocalSocket socket;
-    socket.connectToServer(app.applicationName());
+    socket.connectToServer(KEY);
     socket.waitForConnected(3000);
     if (socket.state() == QLocalSocket::ConnectedState) {
         socket.close();
@@ -65,7 +66,8 @@ int main(int argc, char *argv[])
     // server
     QLocalServer server;
     QObject::connect(&server, &QLocalServer::newConnection, [&win] { win.show(); });
-    server.listen(app.applicationName());
+    QLocalServer::removeServer(KEY);
+    server.listen(KEY);
 
     return app.exec();
 }
