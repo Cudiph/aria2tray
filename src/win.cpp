@@ -69,10 +69,20 @@ void Window::onStateChange(QProcess::ProcessState state)
     }
 }
 
-void Window::restart()
+void Window::handleQuit()
 {
     options->stop();
-    options->stopWait();
+    options->stopWait(5000);
+    options->kill();
+
+    exit();
+}
+
+void Window::handleRestart()
+{
+    options->stop();
+    options->stopWait(10000);
+    options->kill();
     options->start();
 }
 
@@ -108,11 +118,11 @@ QMenu *Window::createTrayMenu()
     quitAction = new QAction;
     quitAction->setText(tr("Quit"));
     quitAction->setChecked(false);
-    connect(quitAction, &QAction::triggered, this, &Window::exit);
+    connect(quitAction, &QAction::triggered, this, &Window::handleQuit);
 
     restartAction = new QAction;
     restartAction->setText(tr("Restart"));
-    connect(restartAction, &QAction::triggered, this, &Window::restart);
+    connect(restartAction, &QAction::triggered, this, &Window::handleRestart);
 
     trayMenu->addAction(restartAction);
     trayMenu->addSeparator();
