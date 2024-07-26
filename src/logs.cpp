@@ -1,5 +1,6 @@
 #include <QFont>
 #include <QRegularExpression>
+#include <QScrollBar>
 #include <QTextCharFormat>
 #include <QTextCursor>
 
@@ -113,6 +114,11 @@ void Logs::log(const QString &msg, Process::LogLevel level)
     QRegularExpressionMatch matchOpen;
     int idxPointer = 0;
 
+    bool followOutput      = false;
+    QScrollBar *vScrollBar = textbox->verticalScrollBar();
+    if (vScrollBar->value() == vScrollBar->maximum())
+        followOutput = true;
+
     while (idxPointer < msg.length()) {
         QTextCharFormat ansiTextFormat;
         int startIndex = msg.indexOf(ansiOpen, idxPointer, &matchOpen);
@@ -166,6 +172,9 @@ void Logs::log(const QString &msg, Process::LogLevel level)
             idxPointer = msg.length();
         }
     }
+
+    if (followOutput)
+        vScrollBar->setValue(vScrollBar->maximum());
 }
 
 void Logs::clear()

@@ -4,12 +4,12 @@
 <context>
     <name>Aria2Tray::Logs</name>
     <message>
-        <location filename="../logs.cpp" line="66"/>
+        <location filename="../logs.cpp" line="67"/>
         <source>Logs is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../logs.cpp" line="69"/>
+        <location filename="../logs.cpp" line="70"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
