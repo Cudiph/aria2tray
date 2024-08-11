@@ -1,39 +1,30 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QLibraryInfo>
-#include <QLocalServer>
-#include <QLocalSocket>
 #include <QLocale>
 #include <QSettings>
 #include <QStringLiteral>
 #include <QTranslator>
+#include <QUrl>
+#include <QWebSocketServer>
 #include <QtLogging>
 
+#include "ipc/wsclient.h"
+#include "ipc/wsserver.h"
 #include "win.h"
 
 using namespace Qt::Literals::StringLiterals;
 
 int main(int argc, char *argv[])
 {
-    const QString KEY = u"nPABAaUkVyDiQjBfhWfmTFvb"_s;
     QApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(false);
     app.setOrganizationName("Aria2Tray");
     QSettings::setDefaultFormat(QSettings::IniFormat);
     qSetMessagePattern(u"%{time yyyyMMdd-h:mm:ss.zzz} [%{type}] %{message}"_s);
 
-    // client
-    QLocalSocket socket;
-    socket.connectToServer(KEY);
-    socket.waitForConnected(3000);
-    if (socket.state() == QLocalSocket::ConnectedState) {
-        socket.close();
-        return 0;
-    }
-
     // l10n
     QTranslator qtTranslator;
-
     if (qtTranslator.load(QLocale::system(), u"qtbase"_s, u"_"_s,
                           QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
         app.installTranslator(&qtTranslator);
@@ -59,15 +50,21 @@ int main(int argc, char *argv[])
 
     qInfo() << "Starting application.";
 
+    Aria2Tray::WSServer wsServer(A2T_IPC_PORT);
+    if (!wsServer.isListening()) {
+        QUrl url;
+        url.setScheme("ws");
+        url.setHost("127.0.0.1");
+        url.setPort(A2T_IPC_PORT);
+        Aria2Tray::WSClient wsClient(url);
+        return app.exec();
+    }
+
     Aria2Tray::Window win;
+    wsServer.win = &win;
+
     if (!parser.isSet("hide-window"))
         win.show();
-
-    // server
-    QLocalServer server;
-    QObject::connect(&server, &QLocalServer::newConnection, [&win] { win.show(); });
-    QLocalServer::removeServer(KEY);
-    server.listen(KEY);
 
     return app.exec();
 }

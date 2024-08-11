@@ -6,6 +6,10 @@ qobject_headers = [
   'logs',
   'options',
   'process',
+
+  # websocket
+  'ipc/wsclient',
+  'ipc/wsserver',
 ]
 srcs = [ 'main.cpp' ]
 deps = [ qt6_dep ]
