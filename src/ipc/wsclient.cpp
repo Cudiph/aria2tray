@@ -16,15 +16,8 @@ WSClient::~WSClient() {}
 
 void WSClient::onConnected()
 {
-    connect(&m_ws, &QWebSocket::textMessageReceived, this, &WSClient::onMsgReceived);
     m_ws.sendTextMessage(u"DOPPELGANGER"_s);
     QApplication::exit();
-}
-
-void WSClient::onMsgReceived(QString msg)
-{
-    qDebug() << msg;
-    // TODO: xxx
 }
 
 } // namespace Aria2Tray

@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <cstdlib>
 
+#include "ipc/wsserver.h"
 #include "process.h"
 #include "win.h"
 
@@ -52,6 +53,15 @@ void Window::iconActivated(QSystemTrayIcon::ActivationReason reason)
         break;
     }
     return;
+}
+
+void Window::connectWSServer(WSServer *ws_server)
+{
+    if (m_ws_server)
+        return;
+    m_ws_server = ws_server;
+    connect(options, &Options::optionsChanged, ws_server, &WSServer::onOptionsChange);
+    ws_server->onOptionsChange(); // load initial secret
 }
 
 void Window::onStateChange(QProcess::ProcessState state)

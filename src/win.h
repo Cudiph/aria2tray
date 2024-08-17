@@ -12,12 +12,16 @@
 
 namespace Aria2Tray {
 
+class WSServer;
+
 class Window : public QMainWindow {
     Q_OBJECT
 
 public:
     Window();
     virtual ~Window();
+
+    void connectWSServer(WSServer *ws_server);
 
 private slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
@@ -45,6 +49,8 @@ private:
 
     QSystemTrayIcon *trayIcon;
     QMenu *trayMenu;
+
+    WSServer *m_ws_server = nullptr;
 };
 
 } // namespace Aria2Tray

@@ -15,7 +15,6 @@ public:
 
 private Q_SLOTS:
     void onConnected();
-    void onMsgReceived(QString msg);
 
 private:
     QWebSocket m_ws;

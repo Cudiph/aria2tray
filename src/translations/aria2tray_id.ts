@@ -124,22 +124,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="336"/>
+        <location filename="../options.cpp" line="343"/>
         <source>Pick pkcs12 certificate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="337"/>
+        <location filename="../options.cpp" line="344"/>
         <source>PKCS12 certificate (*.p12 *.pfx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="345"/>
+        <location filename="../options.cpp" line="352"/>
         <source>Pick directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="424"/>
+        <location filename="../options.cpp" line="432"/>
         <source>Certificate is not found, encryption will be disabled.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -147,47 +147,47 @@
 <context>
     <name>Aria2Tray::Window</name>
     <message>
-        <location filename="../win.cpp" line="22"/>
+        <location filename="../win.cpp" line="23"/>
         <source>System tray is not available in this desktop.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="61"/>
+        <location filename="../win.cpp" line="71"/>
         <source>Service isn&apos;t running.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="64"/>
+        <location filename="../win.cpp" line="74"/>
         <source>Service is starting...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="67"/>
+        <location filename="../win.cpp" line="77"/>
         <source>Service is running.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="105"/>
+        <location filename="../win.cpp" line="115"/>
         <source>Service not running.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="119"/>
+        <location filename="../win.cpp" line="129"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="124"/>
+        <location filename="../win.cpp" line="134"/>
         <source>Restart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="140"/>
+        <location filename="../win.cpp" line="150"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="141"/>
+        <location filename="../win.cpp" line="151"/>
         <source>Logs</source>
         <translation type="unfinished"></translation>
     </message>

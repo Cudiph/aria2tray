@@ -295,16 +295,23 @@ void Options::addStartup()
     QString userAutostartDir = QProcessEnvironment::systemEnvironment().value(
         u"XDG_CONFIG_HOME"_s, home + u"/.config/autostart"_s);
 
-    auto entry = QFile(u"/usr/share/applications/aria2tray.desktop"_s);
-    if (entry.exists())
-        return;
+    // TODO: use compile flag
+    auto entry           = QFile(u"/usr/share/applications/aria2tray.desktop"_s);
+    auto autostart_entry = userAutostartDir + u"/aria2tray.desktop"_s;
 
-    if (entry.link(userAutostartDir + u"/aria2tray.desktop"_s)) {
+    if (!entry.exists())
+        goto end_start;
+
+    if (QFile(autostart_entry).exists())
+        goto end_start;
+
+    if (entry.link(autostart_entry)) {
         qDebug() << "link created at" << userAutostartDir;
     } else {
         qCritical() << "failed to create link at" << userAutostartDir;
     }
 
+end_start:
     start();
 }
 
@@ -409,6 +416,7 @@ void Options::saveConfig()
     settings.setValue(u"runOnStartup"_s, runOnStartup->isChecked());
     settings.setValue(u"aria2Arguments"_s, cmdArgsBuilderWidget->buildArgs());
     qDebug() << "Saving configuration to" << settings.fileName();
+    emit optionsChanged();
 }
 
 QStringList Options::buildArgs()

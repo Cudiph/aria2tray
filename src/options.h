@@ -74,6 +74,9 @@ public:
     void kill();
     void killOthersAria2();
 
+signals:
+    void optionsChanged();
+
 private Q_SLOTS:
     void onStateChange(QProcess::ProcessState state);
     void onStartupChange(Qt::CheckState state);

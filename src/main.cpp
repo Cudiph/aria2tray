@@ -61,7 +61,8 @@ int main(int argc, char *argv[])
     }
 
     Aria2Tray::Window win;
-    wsServer.win = &win;
+    wsServer.setWindow(&win);
+    win.connectWSServer(&wsServer);
 
     if (!parser.isSet("hide-window"))
         win.show();

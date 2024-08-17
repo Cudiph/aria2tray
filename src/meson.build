@@ -7,11 +7,12 @@ qobject_headers = [
   'options',
   'process',
 
-  # websocket
+  # websocket ipc
   'ipc/wsclient',
   'ipc/wsserver',
 ]
-srcs = [ 'main.cpp' ]
+srcs = [ 'main.cpp', 'ipc/jsonrpc.cpp', 'ipc/jsonrpc.h' ]
+  
 deps = [ qt6_dep ]
 headers = []
 
@@ -20,6 +21,7 @@ foreach name : qobject_headers
   headers += name + '.h'
 endforeach
 
+# localization
 languages = [ 'en', 'id' ]
 ts_files = ['aria2tray.ts']
 ts_files_full = ['translations/aria2tray.ts']
