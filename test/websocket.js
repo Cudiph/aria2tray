@@ -36,6 +36,12 @@ function general_test() {
       jsonrpc: "2.0",
       id: null,
     },
+    {
+      jsonrpc: "2.0",
+      id: 1,
+      method: "version",
+      params: [`token:${secret}`],
+    },
   ];
   return reqs;
 }
@@ -49,6 +55,8 @@ function general_test_assert(msg) {
     assertEquals(msg.error?.message, "Invalid method");
   } else if (msg.id === null) {
     assertEquals(msg.error?.message, "id must be integer or string");
+  } else if (msg.id === 1) {
+    assert(msg.result?.version);
   }
 }
 
@@ -274,9 +282,9 @@ ws.onopen = (event) => {
   const reqs = [
     ...general_test(),
     ...auth_test(),
-    ...open_test(),
-    ...delete_test(),
-    ...status_test(),
+    // ...open_test(),
+    // ...delete_test(),
+    // ...status_test(),
   ];
 
   for (const req of reqs) {

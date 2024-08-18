@@ -150,6 +150,8 @@ void WSServer::processRequest(QJsonObject &req_obj, QJsonObject &res)
         return methodDelete(params, res);
     } else if (method == "status") {
         return methodStatus(params, res);
+    } else if (method == "version") {
+        return methodVersion(params, res);
     }
 }
 
@@ -341,6 +343,24 @@ void WSServer::methodStatus(const QJsonArray &params, QJsonObject &res)
 
     qDebug() << "processed status:" << path;
     res.insert("result", result_obj);
+}
+
+/**
+ * Send version of this software
+ *
+ * params:
+ * [secret]
+ *
+ * result:
+ * {
+ *     version: string,
+ * }
+ */
+void WSServer::methodVersion(const QJsonArray &params, QJsonObject &res)
+{
+    QJsonObject response_obj;
+    response_obj.insert("version", A2T_VERSION);
+    res.insert("result", response_obj);
 }
 
 /**

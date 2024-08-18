@@ -195,8 +195,13 @@
 <context>
     <name>main</name>
     <message>
-        <location filename="../main.cpp" line="47"/>
+        <location filename="../main.cpp" line="49"/>
         <source>Hide main windows when opening</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../main.cpp" line="50"/>
+        <source>Show version</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

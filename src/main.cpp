@@ -8,6 +8,7 @@
 #include <QUrl>
 #include <QWebSocketServer>
 #include <QtLogging>
+#include <iostream>
 
 #include "ipc/wsclient.h"
 #include "ipc/wsserver.h"
@@ -43,10 +44,18 @@ int main(int argc, char *argv[])
 
     // options parsing
     QCommandLineParser parser;
+    parser.addHelpOption();
     parser.addOptions({
-        {"hide-window", app.translate("main", "Hide main windows when opening")},
+        {"hide-window",    app.translate("main", "Hide main windows when opening")},
+        {{"v", "version"}, app.translate("main", "Show version")                  },
     });
+
     parser.process(app);
+
+    if (parser.isSet("version")) {
+        std::cout << "Aria2Tray v" << A2T_VERSION << "\n";
+        return 0;
+    }
 
     qInfo() << "Starting application.";
 

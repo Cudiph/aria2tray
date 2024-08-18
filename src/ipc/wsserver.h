@@ -36,6 +36,7 @@ private:
     void methodOpen(const QJsonArray &params, QJsonObject &res);
     void methodDelete(const QJsonArray &params, QJsonObject &res);
     void methodStatus(const QJsonArray &params, QJsonObject &res);
+    void methodVersion(const QJsonArray &params, QJsonObject &res);
 
     // authorizationless methods
     void methodPing(QJsonObject &res);
