@@ -15,11 +15,11 @@ Process::Process(QObject *parent) : QProcess(parent)
     connect(this, &Process::errorOccurred, this, &Process::onErrorOccurred);
 }
 
-Process *Process::instance()
+Process *Process::aria2Instance()
 {
-    if (instance_ == nullptr)
-        instance_ = new Process();
-    return instance_;
+    if (a2instance_ == nullptr)
+        a2instance_ = new Process();
+    return a2instance_;
 }
 
 QString Process::ariaExecutablePath()

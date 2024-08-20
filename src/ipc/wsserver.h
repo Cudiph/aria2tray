@@ -3,11 +3,24 @@
 
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QThread>
+#include <QWebSocket>
 #include <QWebSocketServer>
 
 namespace Aria2Tray {
 
 class Window;
+
+struct response {
+    bool success;
+    QJsonObject response_obj;
+    QString response_str;
+};
+
+struct batch_counter {
+    long long use_remaining;
+    QJsonArray data;
+};
 
 class WSServer : public QObject {
     Q_OBJECT
@@ -22,6 +35,7 @@ public:
 
 public Q_SLOTS:
     void onOptionsChange();
+    void onResultReady(struct response result, QWebSocket *client, QJsonObject req_obj);
 
 private Q_SLOTS:
     void onNewConnection();
@@ -29,22 +43,41 @@ private Q_SLOTS:
     void onTextMessage(QString msg);
 
 private:
-    void processRequest(QJsonObject &req_obj, QJsonObject &res);
-    bool verifySecret(QJsonObject &request, QJsonObject &res, QJsonArray &new_param);
-
-    // jsonrpc methods
-    void methodOpen(const QJsonArray &params, QJsonObject &res);
-    void methodDelete(const QJsonArray &params, QJsonObject &res);
-    void methodStatus(const QJsonArray &params, QJsonObject &res);
-    void methodVersion(const QJsonArray &params, QJsonObject &res);
-
-    // authorizationless methods
-    void methodPing(QJsonObject &res);
+    void processRequest(QJsonObject &req_obj, QWebSocket *client);
 
     QWebSocketServer *m_server;
     QList<QWebSocket *> m_clients;
     QString m_secret = QString("");
     Window *m_win    = nullptr;
+    QHash<quint32, struct batch_counter *> m_batch_hash;
+};
+
+class RequestProcessor : public QThread {
+    Q_OBJECT
+
+public:
+    RequestProcessor(const QString &secret, QJsonObject req_obj, QObject *parent = nullptr);
+    void run() override;
+    void setClient(QWebSocket *client);
+
+signals:
+    void resultReady(struct response result, QWebSocket *client, QJsonObject req_obj);
+
+private:
+    struct response verifySecret(QJsonObject &request, QJsonArray &new_param);
+
+    // jsonrpc methods
+    struct response methodOpen(const QJsonArray &params);
+    struct response methodDelete(const QJsonArray &params);
+    struct response methodStatus(const QJsonArray &params);
+    struct response methodVersion(const QJsonArray &params);
+
+    // authorizationless methods
+    struct response methodPing();
+
+    QString m_secret;
+    QJsonObject m_req_obj;
+    QWebSocket *m_client = nullptr;
 };
 
 } // namespace Aria2Tray

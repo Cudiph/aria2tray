@@ -9,7 +9,8 @@ class Process : public QProcess {
     Q_OBJECT
 
 public:
-    static Process *instance();
+    Process(QObject *parent = nullptr);
+    static Process *aria2Instance();
 
     /**
      * return empty string if not found
@@ -36,8 +37,7 @@ public Q_SLOTS:
     void onErrorOccurred(QProcess::ProcessError error);
 
 private:
-    Process(QObject *parent = nullptr);
-    static inline Process *instance_ = nullptr;
+    static inline Process *a2instance_ = nullptr;
 };
 
 } // namespace Aria2Tray

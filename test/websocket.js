@@ -292,16 +292,16 @@ ws.onopen = (event) => {
   }
 
   // batch testing
-  ws.send(JSON.stringify(reqs));
+  // ws.send(JSON.stringify(reqs));
 };
 
 ws.onmessage = (ev) => {
   const data = JSON.parse(ev.data);
   if (data.slice) {
-    // console.log("=============batch=============");
-    // for (const res of data) {
-    //   vibe_check(res);
-    // }
+    console.log("=============batch=============");
+    for (const res of data) {
+      vibe_check(res);
+    }
   } else {
     vibe_check(data);
     console.log(data);

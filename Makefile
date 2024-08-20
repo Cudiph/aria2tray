@@ -1,3 +1,4 @@
+SHELL := /usr/bin/bash
 BUILDDIR := build
 RELEASEDIR := dist
 LINUX_BUILDDIR := $(BUILDDIR)/linux

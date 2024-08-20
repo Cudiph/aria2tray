@@ -5,6 +5,7 @@
 #include <QFileInfo>
 #include <QJsonDocument>
 #include <QJsonValue>
+#include <QRandomGenerator>
 #include <QSettings>
 #include <QStringList>
 #include <QWebSocket>
@@ -17,6 +18,8 @@ using namespace Qt::Literals::StringLiterals;
 
 namespace Aria2Tray {
 
+const QString BATCH_KEY = "X-ARIA2TRAY-BATCH-ID";
+
 WSServer::WSServer(int port, QObject *parent)
     : QObject(parent),
       m_server(new QWebSocketServer(u"Aria2Tray IPC"_s, QWebSocketServer::NonSecureMode, this))
@@ -25,6 +28,7 @@ WSServer::WSServer(int port, QObject *parent)
         return;
 
     connect(m_server, &QWebSocketServer::newConnection, this, &WSServer::onNewConnection);
+    m_batch_hash.reserve(8);
 }
 
 WSServer::~WSServer()
@@ -84,8 +88,10 @@ void WSServer::onTextMessage(QString msg)
 
     // jsonrpc batch request
     if (json_msg.isArray()) {
-        auto req_array = json_msg.array();
-        auto res_array = QJsonArray();
+        auto req_array  = json_msg.array();
+        auto batch_id   = QRandomGenerator::global()->generate();
+        auto batch_data = new batch_counter({req_array.size()});
+        m_batch_hash.insert(batch_id, batch_data);
 
         for (auto req : req_array) {
             QJsonObject res_obj(res_obj_base);
@@ -93,33 +99,30 @@ void WSServer::onTextMessage(QString msg)
                 res_obj.insert(u"id"_s, QJsonValue::Null);
                 res_obj.insert(u"error"_s,
                                JsonRPC::createError(JsonRPC::InvalidRequest, "Invalid Request"));
-                res_array.push_back(res_obj);
+                m_batch_hash[batch_id]->data.push_back(res_obj);
+                m_batch_hash[batch_id]->use_remaining--;
                 continue;
             }
 
             QJsonObject req_obj = req.toObject();
-            if (!JsonRPC::verify(req_obj, res_obj))
-                goto continue_push_response;
+            if (!JsonRPC::verify(req_obj, res_obj) && req_obj.contains("id")) {
+                m_batch_hash[batch_id]->data.push_back(res_obj);
+                m_batch_hash[batch_id]->use_remaining--;
+                continue;
+            }
 
+            req_obj.insert(BATCH_KEY, QJsonValue::fromVariant(batch_id));
             // object has pass the vibe check, now process it
-            processRequest(req_obj, res_obj);
-
-        continue_push_response:
-            if (req_obj.contains("id"))
-                res_array.push_back(res_obj);
+            processRequest(req_obj, client);
         }
-
-        client->sendTextMessage(JsonRPC::jsonStringify(res_array));
     } else {
-        auto json_msg_obj = json_msg.object();
-        if (!JsonRPC::verify(json_msg_obj, res_obj_base)) {
+        auto req_obj = json_msg.object();
+        if (!JsonRPC::verify(req_obj, res_obj_base)) {
             client->sendTextMessage(JsonRPC::jsonStringify(res_obj_base));
             return;
         }
 
-        processRequest(json_msg_obj, res_obj_base);
-        if (json_msg_obj.contains("id"))
-            client->sendTextMessage(JsonRPC::jsonStringify(res_obj_base));
+        processRequest(req_obj, client);
     }
 }
 
@@ -133,32 +136,89 @@ void WSServer::onOptionsChange()
     setSecret(settings.value(u"RPCSecret"_s, "").toString());
 }
 
-void WSServer::processRequest(QJsonObject &req_obj, QJsonObject &res)
+void WSServer::onResultReady(struct response result, QWebSocket *client, QJsonObject req_obj)
 {
-    auto method = req_obj["method"].toString();
+    if (!req_obj.contains("id"))
+        return;
+
+    auto response_obj = QJsonObject();
+    response_obj.insert("jsonrpc", "2.0");
+    req_obj["id"].isString() ? response_obj.insert("id", req_obj["id"].toString())
+                             : response_obj.insert("id", req_obj["id"].toInt());
+
+    if (result.success) {
+        if (!result.response_obj.isEmpty()) {
+            response_obj.insert("result", result.response_obj);
+        } else {
+            response_obj.insert("result", result.response_str);
+        }
+    } else {
+        response_obj.insert("error", result.response_obj);
+    }
+
+    if (req_obj.contains(BATCH_KEY)) {
+        auto batch_id                   = static_cast<quint32>(req_obj[BATCH_KEY].toInteger());
+        struct batch_counter *batch_ptr = m_batch_hash[batch_id];
+        batch_ptr->data.push_back(response_obj);
+
+        batch_ptr->use_remaining--;
+        if (batch_ptr->use_remaining == 0) {
+            client->sendTextMessage(JsonRPC::jsonStringify(batch_ptr->data));
+            delete batch_ptr;
+            m_batch_hash.remove(batch_id);
+        }
+        return;
+    } else {
+        client->sendTextMessage(JsonRPC::jsonStringify(response_obj));
+    }
+}
+
+void WSServer::processRequest(QJsonObject &req_obj, QWebSocket *client)
+{
+    auto thread = new RequestProcessor(m_secret, req_obj, this);
+    thread->setClient(client);
+    connect(thread, &RequestProcessor::finished, thread, &RequestProcessor::deleteLater);
+    connect(thread, &RequestProcessor::resultReady, this, &WSServer::onResultReady);
+    thread->start();
+}
+
+RequestProcessor::RequestProcessor(const QString &secret, QJsonObject req_obj, QObject *parent)
+    : QThread(parent), m_secret(secret), m_req_obj(req_obj)
+{
+}
+
+void RequestProcessor::run()
+{
+    auto method = m_req_obj["method"].toString();
     if (method == "ping") {
-        return methodPing(res);
+        emit resultReady(methodPing(), m_client, m_req_obj);
+        return;
     }
 
     QJsonArray params;
-    if (!verifySecret(req_obj, res, params))
+    struct response verify_result = verifySecret(m_req_obj, params);
+    if (!verify_result.success) {
+        emit resultReady(verify_result, m_client, m_req_obj);
         return;
+    }
 
     if (method == "open") {
-        return methodOpen(params, res);
+        emit resultReady(methodOpen(params), m_client, m_req_obj);
     } else if (method == "delete") {
-        return methodDelete(params, res);
+        emit resultReady(methodDelete(params), m_client, m_req_obj);
     } else if (method == "status") {
-        return methodStatus(params, res);
+        emit resultReady(methodStatus(params), m_client, m_req_obj);
     } else if (method == "version") {
-        return methodVersion(params, res);
+        emit resultReady(methodVersion(params), m_client, m_req_obj);
     }
 }
+
+void RequestProcessor::setClient(QWebSocket *client) { m_client = client; }
 
 /**
  * Also take care of the positional parameter
  */
-bool WSServer::verifySecret(QJsonObject &request, QJsonObject &res, QJsonArray &new_param)
+struct response RequestProcessor::verifySecret(QJsonObject &request, QJsonArray &new_param)
 {
 
     auto params = request["params"].toArray();
@@ -166,29 +226,25 @@ bool WSServer::verifySecret(QJsonObject &request, QJsonObject &res, QJsonArray &
         if (params[0].toString().startsWith("token:"))
             params.removeFirst();
         new_param = params;
-        return true;
+        return {.success = true, .response_str = "OK"};
     }
 
     if (params.size() == 0) {
-        res.insert("error",
-                   JsonRPC::createError(JsonRPC::Unauthorized, "Empty params (token needed)"));
-        return false;
+        return {false, JsonRPC::createError(JsonRPC::Unauthorized, "Empty params (token needed)")};
     }
 
     if (!params[0].toString().startsWith("token:")) {
-        res.insert("error", JsonRPC::createError(JsonRPC::Unauthorized, "Secret is not provided"));
-        return false;
+        return {false, JsonRPC::createError(JsonRPC::Unauthorized, "Secret is not provided")};
     }
 
     auto secret = params[0].toString().sliced(6);
     if (secret != m_secret) {
-        res.insert("error", JsonRPC::createError(JsonRPC::Unauthorized, "Wrong secret"));
-        return false;
+        return {false, JsonRPC::createError(JsonRPC::Unauthorized, "Wrong secret")};
     }
 
     params.removeFirst();
     new_param = params;
-    return true;
+    return {.success = true, .response_str = "OK"};
 }
 
 /**
@@ -202,18 +258,15 @@ bool WSServer::verifySecret(QJsonObject &request, QJsonObject &res, QJsonArray &
  *
  * error is possible in case file/folder not exist
  */
-void WSServer::methodOpen(const QJsonArray &params, QJsonObject &res)
+struct response RequestProcessor::methodOpen(const QJsonArray &params)
 {
     if (params[0].isUndefined()) {
-        res.insert("error", JsonRPC::createError(JsonRPC::InvalidParams, "Missing argument"));
-        return;
+        return {false, JsonRPC::createError(JsonRPC::InvalidParams, "Missing argument")};
     }
 
     auto url = params[0].toString();
     if (url.isEmpty()) {
-        res.insert("error",
-                   JsonRPC::createError(JsonRPC::InvalidParams, "Missing required argument"));
-        return;
+        return {false, JsonRPC::createError(JsonRPC::InvalidParams, "Missing required argument")};
     }
 
     QProcess proc;
@@ -225,22 +278,20 @@ void WSServer::methodOpen(const QJsonArray &params, QJsonObject &res)
 
     proc.setArguments({url});
     proc.start();
-    proc.waitForFinished();
+    proc.waitForFinished(5000);
 
     if (proc.exitCode() != 0) {
         auto error_msg = proc.readAllStandardError();
+        qDebug() << "failed to open:" << url;
         if (!error_msg.trimmed().isEmpty()) {
-            res.insert("error", JsonRPC::createError(JsonRPC::BadRequest, error_msg));
-        } else {
-            res.insert("error", JsonRPC::createError(JsonRPC::ServerError, "Unknown error"));
+            return {false, JsonRPC::createError(JsonRPC::BadRequest, error_msg)};
         }
 
-        qDebug() << "failed to open:" << url;
-        return;
+        return {false, JsonRPC::createError(JsonRPC::ServerError, "Unknown error")};
     }
 
     qDebug() << "opened:" << url;
-    res.insert("result", "OK");
+    return {.success = true, .response_str = "OK"};
 }
 
 /**
@@ -255,20 +306,18 @@ void WSServer::methodOpen(const QJsonArray &params, QJsonObject &res)
  * error is possible in case file/folder can't be deleted or not exist
  *
  */
-void WSServer::methodDelete(const QJsonArray &params, QJsonObject &res)
+struct response RequestProcessor::methodDelete(const QJsonArray &params)
 {
     // check if delete is root then cancel
     if (params[0].isUndefined()) {
-        res.insert("error", JsonRPC::createError(JsonRPC::InvalidParams, "Missing argument"));
-        return;
+        return {false, JsonRPC::createError(JsonRPC::InvalidParams, "Missing argument")};
     }
 
     auto info = QFileInfo(params[0].toString());
     auto path = info.canonicalFilePath();
 
     if (!info.exists()) {
-        res.insert("error", JsonRPC::createError(JsonRPC::NotFound, "No such file or directory"));
-        return;
+        return {false, JsonRPC::createError(JsonRPC::NotFound, "No such file or directory")};
     }
 
     // prevention accidental deletion system (PADS)
@@ -287,9 +336,8 @@ void WSServer::methodDelete(const QJsonArray &params, QJsonObject &res)
     for (auto pattern : forbidden_pattern_list) {
         QRegularExpression re(pattern, QRegularExpression::CaseInsensitiveOption);
         if (re.match(path).hasMatch()) {
-            res.insert("error", JsonRPC::createError(JsonRPC::Forbidden, "Forbidden path"));
             qDebug() << "Forbidden path:" << path;
-            return;
+            return {false, JsonRPC::createError(JsonRPC::Forbidden, "Forbidden path")};
         }
     }
 
@@ -297,21 +345,19 @@ void WSServer::methodDelete(const QJsonArray &params, QJsonObject &res)
     if (info.isDir()) {
         QDir dir(path);
         if (!dir.removeRecursively()) {
-            res.insert("error", JsonRPC::createError(JsonRPC::UnprocessableContent,
-                                                     "Folder cannot be deleted"));
-            return;
+            return {false, JsonRPC::createError(JsonRPC::UnprocessableContent,
+                                                "Error when deleting folder")};
         }
     } else {
         QFile file(path);
         if (!file.remove()) {
-            res.insert("error", JsonRPC::createError(JsonRPC::UnprocessableContent,
-                                                     "File cannot be deleted"));
-            return;
+            return {false, JsonRPC::createError(JsonRPC::UnprocessableContent,
+                                                "Error when deleting file")};
         }
     }
 
     qDebug() << "deleted:" << path;
-    res.insert("result", "OK");
+    return {.success = true, .response_str = "OK"};
 }
 
 /**
@@ -326,12 +372,11 @@ void WSServer::methodDelete(const QJsonArray &params, QJsonObject &res)
  *     exist: boolean,
  * }
  */
-void WSServer::methodStatus(const QJsonArray &params, QJsonObject &res)
+struct response RequestProcessor::methodStatus(const QJsonArray &params)
 {
     auto path = params[0].toString();
     if (path.trimmed().isEmpty()) {
-        res.insert("error", JsonRPC::createError(JsonRPC::InvalidParams, "Missing argument"));
-        return;
+        return {false, JsonRPC::createError(JsonRPC::InvalidParams, "Missing argument")};
     }
 
     QFileInfo file_info(path);
@@ -342,7 +387,7 @@ void WSServer::methodStatus(const QJsonArray &params, QJsonObject &res)
     }
 
     qDebug() << "processed status:" << path;
-    res.insert("result", result_obj);
+    return {true, result_obj};
 }
 
 /**
@@ -356,11 +401,11 @@ void WSServer::methodStatus(const QJsonArray &params, QJsonObject &res)
  *     version: string,
  * }
  */
-void WSServer::methodVersion(const QJsonArray &params, QJsonObject &res)
+struct response RequestProcessor::methodVersion(const QJsonArray &params)
 {
     QJsonObject response_obj;
     response_obj.insert("version", A2T_VERSION);
-    res.insert("result", response_obj);
+    return {true, response_obj};
 }
 
 /**
@@ -369,10 +414,10 @@ void WSServer::methodVersion(const QJsonArray &params, QJsonObject &res)
  * result:
  * "pong"
  */
-void WSServer::methodPing(QJsonObject &res)
+struct response RequestProcessor::methodPing()
 {
-    res.insert("result", "pong");
     qDebug() << "someone pinged";
+    return {.success = true, .response_str = "pong"};
 }
 
 } // namespace Aria2Tray

@@ -74,7 +74,7 @@ Logs::Logs(QWidget *parent) : QWidget(parent)
     rootLayout->addWidget(textbox);
     rootLayout->addLayout(buttonGridLayout);
 
-    proc = Process::instance();
+    proc = Process::aria2Instance();
     connect(proc, &Process::logReady, this, &Logs::log);
 }
 

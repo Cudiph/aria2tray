@@ -116,7 +116,7 @@ QSystemTrayIcon *Window::createTray()
     trayIcon->show();
 
     connect(trayIcon, &QSystemTrayIcon::activated, this, &Window::iconActivated);
-    connect(Process::instance(), &QProcess::stateChanged, this, &Window::onStateChange);
+    connect(Process::aria2Instance(), &QProcess::stateChanged, this, &Window::onStateChange);
     return trayIcon;
 }
 

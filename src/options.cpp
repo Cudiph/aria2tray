@@ -36,7 +36,7 @@ Options::Options(QWidget *parent) : QWidget(parent)
     rootLayout->addWidget(scrollArea);
     rootLayout->addLayout(actionButtonsLayout());
 
-    proc = Process::instance();
+    proc = Process::aria2Instance();
     connect(proc, &QProcess::stateChanged, this, &Options::onStateChange);
 
     loadConfig();
@@ -525,14 +525,14 @@ CmdArgsBuilder::kvContainer_t *CmdArgsBuilder::appendKVEdit(QString key, QString
 void CmdArgsBuilder::removeAt(qsizetype i)
 {
     CmdArgsBuilder::kvContainer_t *item = kvContainerList.at(i);
-    delete item->container;
+    item->container->deleteLater();
     delete item;
     kvContainerList.removeAt(i);
 }
 
 void CmdArgsBuilder::remove(CmdArgsBuilder::kvContainer_t *container)
 {
-    delete container->container;
+    container->container->deleteLater();
     for (int i = 0; i < kvContainerList.length(); i++) {
         if (kvContainerList.at(i) == container) {
             kvContainerList.removeAt(i);
