@@ -42,6 +42,11 @@ function general_test() {
       method: "version",
       params: [`token:${secret}`],
     },
+    {
+      jsonrpc: "2.0",
+      method: "version",
+      params: [`token:${secret}`],
+    },
   ];
   return reqs;
 }
@@ -299,6 +304,7 @@ ws.onmessage = (ev) => {
   const data = JSON.parse(ev.data);
   if (data.slice) {
     console.log("=============batch=============");
+    console.log(data);
     for (const res of data) {
       vibe_check(res);
     }

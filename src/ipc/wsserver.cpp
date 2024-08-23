@@ -138,8 +138,15 @@ void WSServer::onOptionsChange()
 
 void WSServer::onResultReady(struct response result, QWebSocket *client, QJsonObject req_obj)
 {
-    if (!req_obj.contains("id"))
+    if (!req_obj.contains("id")) {
+        if (req_obj.contains(BATCH_KEY)) {
+            auto batch_id                   = static_cast<quint32>(req_obj[BATCH_KEY].toInteger());
+            struct batch_counter *batch_ptr = m_batch_hash[batch_id];
+            batch_ptr->use_remaining--;
+        }
+
         return;
+    }
 
     auto response_obj = QJsonObject();
     response_obj.insert("jsonrpc", "2.0");
