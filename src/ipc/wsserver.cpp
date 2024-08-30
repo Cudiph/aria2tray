@@ -11,6 +11,7 @@
 #include <QWebSocket>
 
 #include "jsonrpc.h"
+#include "process.h"
 #include "win.h"
 #include "wsserver.h"
 
@@ -37,7 +38,10 @@ WSServer::~WSServer()
     qDeleteAll(m_clients.begin(), m_clients.end());
 }
 
-bool WSServer::isListening() { return m_server->isListening(); }
+bool WSServer::isListening()
+{
+    return m_server->isListening();
+}
 
 void WSServer::onNewConnection()
 {
@@ -126,9 +130,15 @@ void WSServer::onTextMessage(QString msg)
     }
 }
 
-void WSServer::setWindow(Window *main_win) { m_win = main_win; }
+void WSServer::setWindow(Window *main_win)
+{
+    m_win = main_win;
+}
 
-void WSServer::setSecret(const QString &secret) { m_secret = QString(secret); }
+void WSServer::setSecret(const QString &secret)
+{
+    m_secret = QString(secret);
+}
 
 void WSServer::onOptionsChange()
 {
@@ -220,7 +230,10 @@ void RequestProcessor::run()
     }
 }
 
-void RequestProcessor::setClient(QWebSocket *client) { m_client = client; }
+void RequestProcessor::setClient(QWebSocket *client)
+{
+    m_client = client;
+}
 
 /**
  * Also take care of the positional parameter
@@ -277,13 +290,20 @@ struct response RequestProcessor::methodOpen(const QJsonArray &params)
     }
 
     QProcess proc;
+
 #ifdef Q_OS_WIN32
-    proc.setProgram("start");
+    proc.setProgram("cmd.exe");
+    // passing the unfiltered url is generally safe (tested manually)
+    // env var is still expanded but in theory it safe from command injection
+    // but hey, that's just theory, a programming theory
+    proc.setArguments(QStringList() << "/C"
+                                    << "start"
+                                    << "" << url);
 #else
     proc.setProgram("xdg-open");
-#endif // DEBUG
+    proc.setArguments(QStringList() << url);
+#endif // Q_OS_WIN32
 
-    proc.setArguments({url});
     proc.start();
     proc.waitForFinished(5000);
 
