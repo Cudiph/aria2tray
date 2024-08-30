@@ -38,9 +38,15 @@ QString Process::ariaExecutablePath()
     return QStandardPaths::findExecutable(u"aria2c"_s);
 }
 
-void Process::onStdOut() { emit logReady(readAllStandardOutput(), StdOut); }
+void Process::onStdOut()
+{
+    emit logReady(readAllStandardOutput(), StdOut);
+}
 
-void Process::onStdErr() { emit logReady(readAllStandardError(), StdErr); }
+void Process::onStdErr()
+{
+    emit logReady(readAllStandardError(), StdErr);
+}
 
 void Process::onErrorOccurred(QProcess::ProcessError error)
 {

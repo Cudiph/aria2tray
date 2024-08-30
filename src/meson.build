@@ -10,6 +10,9 @@ qobject_headers = [
   # websocket ipc
   'ipc/wsclient',
   'ipc/wsserver',
+
+  # dialogs
+  'dialogs/about'
 ]
 srcs = [ 'main.cpp', 'ipc/jsonrpc.cpp', 'ipc/jsonrpc.h' ]
   
@@ -32,19 +35,22 @@ foreach lang : languages
   ts_files_full += 'translations/' + ts_file
 endforeach
 
-# update translations
+## update translations
 lup_out = run_command(lupdate, srcs, '-ts', ts_files_full, check: true)
 message(lup_out.stdout().strip())
 
 subdir('translations')
 moc_files = qt6.compile_moc(headers: headers, dependencies: qt6_dep)
 
+# resources
+resource_files = qt6.compile_resources(sources: ['resources/documents.qrc', 'resources/images.qrc'])
 
+# binary
 if target_machine.system() == 'windows'
   win = import('windows')
   win_res =  win.compile_resources('../resource.rc', depend_files: '../assets/icon.ico')
-  executable('aria2tray', srcs, moc_files, win_res, dependencies: deps, win_subsystem: 'windows')
+  executable('aria2tray', srcs, moc_files, resource_files, win_res, dependencies: deps, win_subsystem: 'windows')
 else
-  executable('aria2tray', srcs, moc_files, dependencies: deps)
+  executable('aria2tray', srcs, moc_files, resource_files, dependencies: deps)
 endif
 

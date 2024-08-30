@@ -10,16 +10,17 @@ using namespace Qt::Literals::StringLiterals;
 // TODO: set tooltip
 namespace Aria2Tray {
 
-const QString defaultPort       = u"6800"_s;
-const QString defaultRPCSecret  = "";
-const bool defaultExpose        = false;
-const bool defaultUseIpv6       = false;
-const bool defaultSecure        = false;
-const QString defaultCertPath   = "";
-const QString defaultSaveFolder = "";
-const bool defaultCertCheck     = false;
-const bool defaultRunOnStartup  = false;
-const QStringList defaultCmdArgs =
+const QString DEFAULT_PORT        = u"6800"_s;
+const QString DEFAULT_RPC_SECRET  = "";
+const bool DEFAULT_EXPOSE         = false;
+const bool DEFAULT_USE_IPV6       = false;
+const bool DEFAULT_SECURE         = false;
+const QString DEFAULT_CERT_PATH   = "";
+const QString DEFAULT_SAVE_FOLDER = "";
+const bool DEFAULT_CERT_CHECK     = false;
+const bool DEFAULT_RUN_ON_STARTUP = false;
+const bool DEFAULT_ADVANCED_USER  = false;
+const QStringList DEFAULT_CMD_ARGS =
     QStringList{"--max-connection-per-server", "16", "-s", "16", "--min-split-size", "1M"};
 
 Options::Options(QWidget *parent) : QWidget(parent)
@@ -31,6 +32,7 @@ Options::Options(QWidget *parent) : QWidget(parent)
     scrollLayout->addWidget(rpcLayout());
     scrollLayout->addWidget(miscLayout());
     scrollLayout->addWidget(cmdArgsLayout());
+    scrollLayout->addStretch();
     scrollArea->setWidget(scrollWidget);
     scrollArea->setWidgetResizable(true);
     rootLayout->addWidget(scrollArea);
@@ -58,7 +60,8 @@ QGroupBox *Options::rpcLayout()
 
     auto RPCSecretLayout = new QHBoxLayout;
     RPCSecretLabel       = new QLabel(tr("RPC Secret:"), this);
-    RPCSecretEdit        = new QLineEdit(defaultRPCSecret, this);
+    RPCSecretEdit        = new QLineEdit(DEFAULT_RPC_SECRET, this);
+    RPCSecretLabel->setToolTip(tr("Also used for integration secret"));
     RPCSecretEdit->setEchoMode(QLineEdit::Password);
     RPCSecretEdit->setValidator(new QRPCSecretValidator(this));
     RPCSecretLayout->addWidget(RPCSecretLabel);
@@ -116,17 +119,21 @@ QGroupBox *Options::miscLayout()
 
     certCheck    = new QCheckBox(tr("Enable ssl certificate check"), this);
     runOnStartup = new QCheckBox(tr("Start service on startup"), this);
+    advancedUser = new QCheckBox(tr("I am an advanced user"), this);
 
     vLayout->setAlignment(Qt::AlignTop);
     vLayout->addWidget(saveFolderLayoutRoot);
     vLayout->addWidget(certCheck);
     vLayout->addWidget(runOnStartup);
+    vLayout->addWidget(advancedUser);
     miscGroupBox->setLayout(vLayout);
 
     connect(saveFolderEdit, &QLineEdit::editingFinished, this, &Options::saveConfig);
     connect(certCheck, &QCheckBox::checkStateChanged, this, &Options::saveConfig);
     connect(runOnStartup, &QCheckBox::checkStateChanged, this, &Options::saveConfig);
+    connect(advancedUser, &QCheckBox::checkStateChanged, this, &Options::saveConfig);
     connect(runOnStartup, &QCheckBox::checkStateChanged, this, &Options::onStartupChange);
+    connect(advancedUser, &QCheckBox::checkStateChanged, this, &Options::onAdvanceUserChange);
 
     return miscGroupBox;
 }
@@ -145,6 +152,8 @@ QGroupBox *Options::cmdArgsLayout()
 
     connect(cmdArgsBuilderWidget, &CmdArgsBuilder::editingFinished, this, &Options::saveConfig);
     connect(cmdArgsAddButton, &QPushButton::clicked, this, &Options::addNewArgs);
+
+    cmdArgsGroupBox->hide();
 
     return cmdArgsGroupBox;
 }
@@ -169,14 +178,14 @@ QGridLayout *Options::actionButtonsLayout()
 
 void Options::resetDefault()
 {
-    portEdit->setText(defaultPort);
-    expose->setChecked(defaultExpose);
-    useIpv6->setChecked(defaultUseIpv6);
-    secure->setChecked(defaultSecure);
-    certPathEdit->setText(defaultCertPath);
-    certCheck->setChecked(defaultCertCheck);
-    runOnStartup->setChecked(defaultRunOnStartup);
-    cmdArgsBuilderWidget->loadArgs(defaultCmdArgs);
+    portEdit->setText(DEFAULT_PORT);
+    expose->setChecked(DEFAULT_EXPOSE);
+    useIpv6->setChecked(DEFAULT_USE_IPV6);
+    secure->setChecked(DEFAULT_SECURE);
+    certPathEdit->setText(DEFAULT_CERT_PATH);
+    certCheck->setChecked(DEFAULT_CERT_CHECK);
+    runOnStartup->setChecked(DEFAULT_RUN_ON_STARTUP);
+    cmdArgsBuilderWidget->loadArgs(DEFAULT_CMD_ARGS);
 }
 
 void Options::start()
@@ -211,7 +220,10 @@ void Options::stop()
 #endif // Q_OS_WIN32
 }
 
-void Options::stopWait(int msecs) { proc->waitForFinished(msecs); }
+void Options::stopWait(int msecs)
+{
+    proc->waitForFinished(msecs);
+}
 
 void Options::kill()
 {
@@ -265,6 +277,19 @@ void Options::onStartupChange(Qt::CheckState state)
     case Qt::Unchecked:
     default:
         removeStartup();
+        break;
+    }
+}
+
+void Options::onAdvanceUserChange(Qt::CheckState state)
+{
+    switch (state) {
+    case Qt::Checked:
+        cmdArgsGroupBox->show();
+        break;
+    case Qt::Unchecked:
+        cmdArgsGroupBox->hide();
+    default:
         break;
     }
 }
@@ -368,21 +393,25 @@ void Options::toggleCertPath(Qt::CheckState state)
     }
 }
 
-void Options::addNewArgs() { cmdArgsBuilderWidget->appendKVEdit(); }
+void Options::addNewArgs()
+{
+    cmdArgsBuilderWidget->appendKVEdit();
+}
 
 void Options::loadConfig()
 {
     QSettings settings;
-    auto savedPort         = settings.value(u"port"_s, defaultPort).toString();
-    auto savedRPCSecret    = settings.value(u"RPCSecret"_s, defaultRPCSecret).toString();
-    auto savedExpose       = settings.value(u"expose"_s, defaultExpose).toBool();
-    auto savedUseIpv6      = settings.value(u"ipv6"_s, defaultUseIpv6).toBool();
-    auto savedSecure       = settings.value(u"secure"_s, defaultSecure).toBool();
-    auto savedSaveFolder   = settings.value(u"saveFolder"_s, defaultSaveFolder).toString();
-    auto savedCertPath     = settings.value(u"pkcs12Path"_s, defaultCertPath).toString();
-    auto savedCertCheck    = settings.value(u"certCheck"_s, defaultCertCheck).toBool();
-    auto savedRunOnStartup = settings.value(u"runOnStartup"_s, defaultRunOnStartup).toBool();
-    auto savedCmdArgs      = settings.value(u"aria2Arguments"_s, defaultCmdArgs).toStringList();
+    auto savedPort         = settings.value(u"port"_s, DEFAULT_PORT).toString();
+    auto savedRPCSecret    = settings.value(u"RPCSecret"_s, DEFAULT_RPC_SECRET).toString();
+    auto savedExpose       = settings.value(u"expose"_s, DEFAULT_EXPOSE).toBool();
+    auto savedUseIpv6      = settings.value(u"ipv6"_s, DEFAULT_USE_IPV6).toBool();
+    auto savedSecure       = settings.value(u"secure"_s, DEFAULT_SECURE).toBool();
+    auto savedSaveFolder   = settings.value(u"saveFolder"_s, DEFAULT_SAVE_FOLDER).toString();
+    auto savedCertPath     = settings.value(u"pkcs12Path"_s, DEFAULT_CERT_PATH).toString();
+    auto savedCertCheck    = settings.value(u"certCheck"_s, DEFAULT_CERT_CHECK).toBool();
+    auto savedRunOnStartup = settings.value(u"runOnStartup"_s, DEFAULT_RUN_ON_STARTUP).toBool();
+    auto savedAdvancedUser = settings.value(u"advancedUser"_s, DEFAULT_ADVANCED_USER).toBool();
+    auto savedCmdArgs      = settings.value(u"aria2Arguments"_s, DEFAULT_CMD_ARGS).toStringList();
 
     qDebug() << "Loading configuration from" << settings.fileName();
 
@@ -395,6 +424,7 @@ void Options::loadConfig()
     certPathEdit->setText(savedCertPath);
     certCheck->setChecked(savedCertCheck);
     runOnStartup->setChecked(savedRunOnStartup);
+    advancedUser->setChecked(savedAdvancedUser);
     cmdArgsBuilderWidget->loadArgs(savedCmdArgs);
 
     // save again in case some preprocessing produce different output
@@ -414,6 +444,7 @@ void Options::saveConfig()
     settings.setValue(u"pkcs12Path"_s, certPathEdit->text());
     settings.setValue(u"certCheck"_s, certCheck->isChecked());
     settings.setValue(u"runOnStartup"_s, runOnStartup->isChecked());
+    settings.setValue(u"advancedUser"_s, advancedUser->isChecked());
     settings.setValue(u"aria2Arguments"_s, cmdArgsBuilderWidget->buildArgs());
     qDebug() << "Saving configuration to" << settings.fileName();
     emit optionsChanged();
@@ -554,7 +585,10 @@ void CmdArgsBuilder::onItemTextChanged(const QString &textChanged)
     emit contentChanged(textChanged);
 }
 
-void CmdArgsBuilder::onEditingFinished() { emit editingFinished(); }
+void CmdArgsBuilder::onEditingFinished()
+{
+    emit editingFinished();
+}
 
 QStringList CmdArgsBuilder::buildArgs()
 {

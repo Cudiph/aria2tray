@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <cstdlib>
 
+#include "dialogs/about.h"
 #include "ipc/wsserver.h"
 #include "process.h"
 #include "win.h"
@@ -13,8 +14,8 @@
 using namespace Qt::Literals::StringLiterals;
 
 namespace Aria2Tray {
-const int initw = 680;
-const int inith = 540;
+const int INIT_WIDTH  = 680;
+const int INIT_HEIGHT = 540;
 
 Window::Window()
 {
@@ -33,10 +34,13 @@ Window::Window()
     setCentralWidget(centralWidget);
 
     // move to center of the screen (work same without)
-    auto screenSize = QApplication::primaryScreen()->size();
-    auto xPos       = screenSize.width() / 2 - initw / 2;
-    auto yPos       = screenSize.height() / 2 - inith / 2;
+    auto screen_dim = QApplication::primaryScreen()->size();
+    auto xPos       = screen_dim.width() / 2 - INIT_WIDTH / 2;
+    auto yPos       = screen_dim.height() / 2 - INIT_HEIGHT / 2;
     move(xPos, yPos);
+
+    m_menu_bar = createMenuBar();
+    setMenuBar(m_menu_bar);
 
     restoreState();
 }
@@ -79,6 +83,17 @@ void Window::onStateChange(QProcess::ProcessState state)
     }
 }
 
+void Window ::handleOpen()
+{
+    show();
+}
+
+void Window ::handleAbout()
+{
+    auto about_dialog = AboutDialog();
+    about_dialog.exec();
+}
+
 void Window::handleQuit()
 {
     options->stop();
@@ -100,6 +115,14 @@ void Window::closeEvent(QCloseEvent *event)
 {
     event->ignore();
     setVisible(false);
+}
+
+void Window::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Alt)
+        m_menu_bar->setVisible(!m_menu_bar->isVisible());
+    else
+        QMainWindow::keyReleaseEvent(event);
 }
 
 QSystemTrayIcon *Window::createTray()
@@ -125,17 +148,22 @@ QMenu *Window::createTrayMenu()
     trayMenu = new QMenu;
     trayMenu->setMinimumWidth(150);
 
-    quitAction = new QAction;
-    quitAction->setText(tr("Quit"));
-    quitAction->setChecked(false);
+    auto open_action = new QAction(tr("Open"), this);
+    connect(open_action, &QAction::triggered, this, &Window::handleOpen);
+
+    auto about_action = new QAction(tr("About"), this);
+    connect(about_action, &QAction::triggered, this, &Window::handleAbout);
+
+    quitAction = new QAction(tr("Quit"));
     connect(quitAction, &QAction::triggered, this, &Window::handleQuit);
 
-    restartAction = new QAction;
-    restartAction->setText(tr("Restart"));
+    restartAction = new QAction(tr("Restart"), this);
     connect(restartAction, &QAction::triggered, this, &Window::handleRestart);
 
-    trayMenu->addAction(restartAction);
+    trayMenu->addAction(open_action);
+    trayMenu->addAction(about_action);
     trayMenu->addSeparator();
+    trayMenu->addAction(restartAction);
     trayMenu->addAction(quitAction);
     return trayMenu;
 }
@@ -153,12 +181,20 @@ QTabWidget *Window::createTabBar()
     return tabs;
 }
 
+MenuBar *Window::createMenuBar()
+{
+    auto menu_bar = new MenuBar(this);
+    menu_bar->hide();
+
+    return menu_bar;
+}
+
 void Window::restoreState()
 {
     QSettings settings;
     settings.beginGroup(u"window"_s);
-    auto w = settings.value(u"width"_s, initw).toInt();
-    auto h = settings.value(u"height"_s, inith).toInt();
+    auto w = settings.value(u"width"_s, INIT_WIDTH).toInt();
+    auto h = settings.value(u"height"_s, INIT_HEIGHT).toInt();
     auto x = settings.value(u"x"_s, 0).toInt();
     auto y = settings.value(u"y"_s, 0).toInt();
     settings.endGroup();
@@ -175,7 +211,6 @@ void Window::restoreState()
 
 void Window::exit(int code)
 {
-
     QSettings settings;
     settings.beginGroup(u"window"_s);
     settings.setValue(u"width"_s, width());
@@ -185,6 +220,26 @@ void Window::exit(int code)
     settings.endGroup();
 
     QApplication::exit(code);
+}
+
+MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent)
+{
+    aboutMenu();
+}
+
+void MenuBar::on_aboutAction_triggered()
+{
+    auto about_dialog = AboutDialog();
+    about_dialog.exec();
+}
+
+void MenuBar::aboutMenu()
+{
+    QMenu *about_menu     = addMenu(u"&Help"_s);
+    QAction *about_action = about_menu->addAction(tr("&About") + " Aria2Tray");
+    about_action->setIcon(QIcon::fromTheme("help-about"));
+
+    connect(about_action, &QAction::triggered, this, &MenuBar::on_aboutAction_triggered);
 }
 
 } // namespace Aria2Tray

@@ -80,6 +80,7 @@ signals:
 private Q_SLOTS:
     void onStateChange(QProcess::ProcessState state);
     void onStartupChange(Qt::CheckState state);
+    void onAdvanceUserChange(Qt::CheckState state);
     void onCertPathClick();
     void onSaveFolderClick();
 
@@ -122,6 +123,7 @@ private:
     QPushButton *saveFolderButton;
     QCheckBox *certCheck;
     QCheckBox *runOnStartup;
+    QCheckBox *advancedUser;
 
     QGroupBox *cmdArgsGroupBox;
     CmdArgsBuilder *cmdArgsBuilderWidget;
