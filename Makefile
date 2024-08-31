@@ -28,11 +28,10 @@ icon := usr/share/aria2tray/aria2tray.svg
 icon_symlink := usr/share/icons/aria2tray.svg
 
 install:
-	mkdir -p $(DESTDIR)/$(translations) "$(DESTDIR)/usr/bin/" "$(DESTDIR)/usr/share/applications" "$(DESTDIR)/usr/share/icons"
-	cp $(LINUX_RELEASEDIR)/src/aria2tray $(DESTDIR)/$(bin)
-	cp -r $(LINUX_RELEASEDIR)/src/ $(DESTDIR)/$(translations)
-	cp assets/aria2tray.desktop $(DESTDIR)/$(desktop_entry)
-	cp assets/icon.svg $(DESTDIR)/$(icon)
+	install -Dm 755 $(LINUX_RELEASEDIR)/src/aria2tray $(DESTDIR)/$(bin)
+	install -Dm 644 $(LINUX_RELEASEDIR)/src/translations $(DESTDIR)/$(translations)
+	install -Dm 644 assets/aria2tray.desktop $(DESTDIR)/$(desktop_entry)
+	install -Dm 644 assets/icon.svg $(DESTDIR)/$(icon)
 	ln -s /$(icon) $(DESTDIR)/$(icon_symlink)
 	
 uninstall:

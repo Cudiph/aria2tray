@@ -7,7 +7,6 @@
 
 using namespace Qt::Literals::StringLiterals;
 
-// TODO: set tooltip
 namespace Aria2Tray {
 
 const QString DEFAULT_PORT        = u"6800"_s;
@@ -164,6 +163,9 @@ QGridLayout *Options::actionButtonsLayout()
     resetButton      = new QPushButton(tr("Reset to default"), this);
     forceStopButton  = new QPushButton(tr("Force stop"), this);
     startButton      = new QPushButton(tr("START"), this);
+
+    forceStopButton->setToolTip(tr("Will also kill all aria2c process"));
+
     connect(resetButton, &QPushButton::clicked, this, &Options::resetDefault);
     connect(forceStopButton, &QPushButton::clicked, this, &Options::kill);
     connect(forceStopButton, &QPushButton::clicked, this, &Options::killOthersAria2);
@@ -320,7 +322,6 @@ void Options::addStartup()
     QString userAutostartDir = QProcessEnvironment::systemEnvironment().value(
         u"XDG_CONFIG_HOME"_s, home + u"/.config/autostart"_s);
 
-    // TODO: use compile flag
     auto entry           = QFile(u"/usr/share/applications/aria2tray.desktop"_s);
     auto autostart_entry = userAutostartDir + u"/aria2tray.desktop"_s;
 
