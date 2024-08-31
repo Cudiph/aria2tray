@@ -29,7 +29,7 @@ icon_symlink := usr/share/icons/aria2tray.svg
 
 install:
 	install -Dm 755 $(LINUX_RELEASEDIR)/src/aria2tray $(DESTDIR)/$(bin)
-	install -Dm 644 $(LINUX_RELEASEDIR)/src/translations $(DESTDIR)/$(translations)
+	install -Dm 644 $(LINUX_RELEASEDIR)/src/translations/* -t $(DESTDIR)/$(translations)
 	install -Dm 644 assets/aria2tray.desktop $(DESTDIR)/$(desktop_entry)
 	install -Dm 644 assets/icon.svg $(DESTDIR)/$(icon)
 	ln -s /$(icon) $(DESTDIR)/$(icon_symlink)
