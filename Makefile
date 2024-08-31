@@ -32,7 +32,7 @@ install:
 	install -Dm 644 $(LINUX_RELEASEDIR)/src/translations/* -t $(DESTDIR)/$(translations)
 	install -Dm 644 assets/aria2tray.desktop $(DESTDIR)/$(desktop_entry)
 	install -Dm 644 assets/icon.svg $(DESTDIR)/$(icon)
-	ln -s /$(icon) $(DESTDIR)/$(icon_symlink)
+	mkdir -p "$(DESTDIR)/usr/share/icons" && ln -s /$(icon) $(DESTDIR)/$(icon_symlink)
 	
 uninstall:
 	rm -f /$(bin) /$(desktop_entry) /$(icon) /$(icon_symlink)
