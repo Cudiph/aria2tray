@@ -307,7 +307,11 @@ struct response RequestProcessor::methodOpen(const QJsonArray &params)
     proc.start();
     proc.waitForFinished(5000);
 
-    if (proc.exitCode() != 0) {
+    if (proc.state() == QProcess::Running) {
+        // xdg-open sometimes doesn't detach itself and wait child process to be finished
+        proc.kill();
+        proc.waitForFinished();
+    } else if (proc.exitCode() != 0) {
         auto error_msg = proc.readAllStandardError();
         qDebug() << "failed to open:" << url;
         if (!error_msg.trimmed().isEmpty()) {
