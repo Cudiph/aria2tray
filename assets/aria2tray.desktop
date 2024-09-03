@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Aria2 Tray
+Name=aria2Tray
 Comment=Run aria2 rpc in the background
 Type=Network
 Exec=aria2tray --hide-window

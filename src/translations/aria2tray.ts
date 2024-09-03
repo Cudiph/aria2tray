@@ -60,7 +60,7 @@
 <context>
     <name>Aria2Tray::MenuBar</name>
     <message>
-        <location filename="../win.cpp" line="239"/>
+        <location filename="../win.cpp" line="241"/>
         <source>&amp;About</source>
         <translation type="unfinished"></translation>
     </message>
@@ -218,52 +218,52 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="75"/>
-        <source>Service isn&apos;t running.</source>
+        <location filename="../win.cpp" line="76"/>
+        <source>Service stopped.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="78"/>
+        <location filename="../win.cpp" line="79"/>
         <source>Service is starting...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="81"/>
+        <location filename="../win.cpp" line="82"/>
         <source>Service is running.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="138"/>
+        <location filename="../win.cpp" line="139"/>
         <source>Service not running.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="151"/>
+        <location filename="../win.cpp" line="152"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="154"/>
+        <location filename="../win.cpp" line="155"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="157"/>
+        <location filename="../win.cpp" line="158"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="160"/>
+        <location filename="../win.cpp" line="161"/>
         <source>Restart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="178"/>
+        <location filename="../win.cpp" line="179"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../win.cpp" line="179"/>
+        <location filename="../win.cpp" line="180"/>
         <source>Logs</source>
         <translation type="unfinished"></translation>
     </message>

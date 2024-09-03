@@ -31,10 +31,10 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
 void AboutDialog::setupHeader()
 {
     auto logo     = new QLabel(this);
-    auto the_name = new QLabel(u"Aria2Tray"_s, this);
+    auto the_name = new QLabel(u"aria2Tray"_s, this);
     auto version  = new QLabel(tr("Version: ") + A2T_VERSION, this);
 
-    logo->setPixmap(QIcon(":/images/assets/icon.svg").pixmap(QSize(75, 75)));
+    logo->setPixmap(QIcon(":/images/assets/icon.ico").pixmap(QSize(64, 64)));
     logo->setAlignment(Qt::AlignCenter);
 
     the_name->setAlignment(Qt::AlignCenter);
@@ -82,7 +82,7 @@ QWidget *AboutDialog::createLicenseWidget()
 
 QWidget *AboutDialog::createAboutWidget()
 {
-    const QString repo_url  = "https://github.com/Cudiph/Aria2Tray";
+    const QString repo_url  = "https://github.com/Cudiph/aria2Tray";
     const QString ia2dm_url = "https://github.com/Cudiph/IA2DM";
 
     auto wdgt        = new QWidget(this);

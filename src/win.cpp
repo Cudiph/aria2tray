@@ -27,6 +27,7 @@ Window::Window()
     }
 
     createTray();
+    setWindowIcon(QIcon(u":/images/assets/icon.ico"_s));
 
     auto centralWidget = new QWidget(this);
     auto vLayout       = new QVBoxLayout(centralWidget);
@@ -72,7 +73,7 @@ void Window::onStateChange(QProcess::ProcessState state)
 {
     switch (state) {
     case QProcess::NotRunning:
-        trayIcon->setToolTip(tr("Service isn't running."));
+        trayIcon->setToolTip(tr("Service stopped."));
         break;
     case QProcess::Starting:
         trayIcon->setToolTip(tr("Service is starting..."));
@@ -130,7 +131,7 @@ QSystemTrayIcon *Window::createTray()
     trayIcon = new QSystemTrayIcon;
 
 #ifdef Q_OS_WIN32
-    trayIcon->setIcon(QIcon(QApplication::applicationDirPath() + u"/icon.ico"_s));
+    trayIcon->setIcon(QIcon(u":/images/assets/icon.ico"_s));
 #else
     trayIcon->setIcon(QIcon(QStringLiteral(A2T_DATA_DIR) + u"/aria2tray.svg"_s));
 #endif // Q_OS_WIN32
@@ -225,6 +226,7 @@ void Window::exit(int code)
 MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent)
 {
     aboutMenu();
+    // TODO: fileMenu();
 }
 
 void MenuBar::on_aboutAction_triggered()
@@ -236,7 +238,7 @@ void MenuBar::on_aboutAction_triggered()
 void MenuBar::aboutMenu()
 {
     QMenu *about_menu     = addMenu(u"&Help"_s);
-    QAction *about_action = about_menu->addAction(tr("&About") + " Aria2Tray");
+    QAction *about_action = about_menu->addAction(tr("&About") + " aria2Tray");
     about_action->setIcon(QIcon::fromTheme("help-about"));
 
     connect(about_action, &QAction::triggered, this, &MenuBar::on_aboutAction_triggered);

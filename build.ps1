@@ -24,8 +24,6 @@ if ($args[0] -eq "release") {
 
 meson setup $outdir $meson_flags.split()
 ninja -C $outdir
-cp assets/icon.ico "$outdir/src/"
-
 
 if ($args[0] -eq "release") {
   windeployqt.exe --release $outdir/src/aria2tray.exe
