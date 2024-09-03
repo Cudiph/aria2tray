@@ -2,8 +2,8 @@
 #define ARIA2TRAY_WINDOW_H_
 
 #include <QCloseEvent>
-#include <QMainWindow>
 #include <QKeyEvent>
+#include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
 #include <QSystemTrayIcon>
@@ -16,6 +16,8 @@ namespace Aria2Tray {
 
 class WSServer;
 
+class Window;
+
 class MenuBar : public QMenuBar {
     Q_OBJECT
 
@@ -26,7 +28,10 @@ private Q_SLOTS:
     void on_aboutAction_triggered();
 
 private:
-    void aboutMenu();
+    void helpMenu();
+    void fileMenu();
+
+    Window *attached_window = nullptr;
 };
 
 class Window : public QMainWindow {
@@ -38,13 +43,15 @@ public:
 
     void connectWSServer(WSServer *ws_server);
 
-private Q_SLOTS:
-    void iconActivated(QSystemTrayIcon::ActivationReason reason);
-    void onStateChange(QProcess::ProcessState state);
+public Q_SLOTS:
     void handleOpen();
     void handleAbout();
     void handleQuit();
     void handleRestart();
+
+private Q_SLOTS:
+    void iconActivated(QSystemTrayIcon::ActivationReason reason);
+    void onStateChange(QProcess::ProcessState state);
 
 protected Q_SLOTS:
     void closeEvent(QCloseEvent *event) override;

@@ -60,8 +60,18 @@
 <context>
     <name>Aria2Tray::MenuBar</name>
     <message>
-        <location filename="../win.cpp" line="241"/>
+        <location filename="../win.cpp" line="242"/>
         <source>&amp;About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../win.cpp" line="251"/>
+        <source>&amp;Close Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../win.cpp" line="252"/>
+        <source>&amp;Quit</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

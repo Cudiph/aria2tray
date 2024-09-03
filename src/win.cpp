@@ -223,10 +223,11 @@ void Window::exit(int code)
     QApplication::exit(code);
 }
 
-MenuBar::MenuBar(QWidget *parent) : QMenuBar(parent)
+MenuBar::MenuBar(QWidget *parent)
+    : QMenuBar(parent), attached_window(qobject_cast<Window *>(parent))
 {
-    aboutMenu();
-    // TODO: fileMenu();
+    fileMenu();
+    helpMenu();
 }
 
 void MenuBar::on_aboutAction_triggered()
@@ -235,13 +236,24 @@ void MenuBar::on_aboutAction_triggered()
     about_dialog.exec();
 }
 
-void MenuBar::aboutMenu()
+void MenuBar::helpMenu()
 {
-    QMenu *about_menu     = addMenu(u"&Help"_s);
-    QAction *about_action = about_menu->addAction(tr("&About") + " aria2Tray");
+    QMenu *help_menu      = addMenu(u"&Help"_s);
+    QAction *about_action = help_menu->addAction(tr("&About") + " aria2Tray");
     about_action->setIcon(QIcon::fromTheme("help-about"));
 
     connect(about_action, &QAction::triggered, this, &MenuBar::on_aboutAction_triggered);
+}
+
+void MenuBar::fileMenu()
+{
+    QMenu *file_menu      = addMenu(u"&File"_s);
+    QAction *close_action = file_menu->addAction(tr("&Close Window"));
+    QAction *quit_action  = file_menu->addAction(tr("&Quit"));
+    quit_action->setIcon(QIcon::fromTheme("window-close"));
+
+    connect(close_action, &QAction::triggered, attached_window, &Window::close);
+    connect(quit_action, &QAction::triggered, attached_window, &Window::handleQuit);
 }
 
 } // namespace Aria2Tray
