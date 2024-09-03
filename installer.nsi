@@ -37,7 +37,13 @@ Section "aria2Tray Installer"
   File "assets\icon.ico"
   File "LICENSE"
   File "${BUILD_DIR}\aria2tray.exe"
-  File /r "${BUILD_DIR}\*.dll"
+  File "${BUILD_DIR}\Qt6*.dll"
+  File /r "${BUILD_DIR}\generic"
+  File /r "${BUILD_DIR}\imageformats"
+  File /r "${BUILD_DIR}\networkinformation"
+  File /r "${BUILD_DIR}\platforms"
+  File /r "${BUILD_DIR}\styles"
+  File /r "${BUILD_DIR}\tls"
   File /r "${BUILD_DIR}\translations"
 
   CreateDirectory "$SMPROGRAMS\${APPNAME}"
@@ -51,7 +57,7 @@ Section "aria2Tray Installer"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "Publisher" "Cudiph"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "HelpLink" "https://github.com/Cudiph/aria2Tray/issues"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayVersion" "${APPVERSION}"
-  WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "EstimatedSize" 46348
+  WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "EstimatedSize" 27985
 
   WriteUninstaller "$INSTDIR\uninstall.exe"
 SectionEnd
