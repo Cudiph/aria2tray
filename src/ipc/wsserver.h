@@ -37,6 +37,10 @@ public Q_SLOTS:
     void onOptionsChange();
     void onResultReady(struct response result, QWebSocket *client, QJsonObject req_obj);
 
+    // watch out when changing function name
+    QString filePickerFolderProxy();
+    QString filePickerFileProxy(QString filter);
+
 private Q_SLOTS:
     void onNewConnection();
     void onDisconnected();
@@ -44,6 +48,7 @@ private Q_SLOTS:
 
 private:
     void processRequest(QJsonObject &req_obj, QWebSocket *client);
+    bool isClientConnected(QWebSocket *client);
 
     QWebSocketServer *m_server;
     QList<QWebSocket *> m_clients;
@@ -71,6 +76,7 @@ private:
     struct response methodDelete(const QJsonArray &params);
     struct response methodStatus(const QJsonArray &params);
     struct response methodVersion(const QJsonArray &params);
+    struct response methodFilePicker(const QJsonArray &params);
 
     // authorizationless methods
     struct response methodPing();
@@ -78,6 +84,7 @@ private:
     QString m_secret;
     QJsonObject m_req_obj;
     QWebSocket *m_client = nullptr;
+    WSServer *m_wsserver = nullptr;
 };
 
 } // namespace Aria2Tray

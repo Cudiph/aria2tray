@@ -27,11 +27,21 @@ function name start with `method` or here in summary with aria2 documentation st
 
 Open url or filepath using `xdg-open` in Unix and win32 cmd's `start` in Windows.
 
+params:
+
+```typescript
+uri: string;
+```
+
 return: `"OK"`
 
 ### `delete([secret,] filepath)`
 
 Delete file or folder.
+
+```typescript
+filepath: string;
+```
 
 return: `"OK"`
 
@@ -39,12 +49,37 @@ return: `"OK"`
 
 Get status of file.
 
+params:
+
+```typescript
+filepath: string;
+```
+
 return:
 
 ```typescript
 {
     type?: "folder" | "file",
     exist: boolean,
+}
+```
+
+### `filePicker([secret,] type [, filter])`
+
+Open a file picker pop-up and return selected file/folder, empty string if cancelled.
+
+params:
+
+```typescript
+type: "file" | "folder",
+filter: string, // https://doc.qt.io/qt-6/qfiledialog.html#getOpenFileName
+```
+
+return:
+
+```typescript
+{
+    selected: string,
 }
 ```
 

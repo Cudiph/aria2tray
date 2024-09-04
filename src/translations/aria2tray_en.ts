@@ -221,6 +221,19 @@
     </message>
 </context>
 <context>
+    <name>Aria2Tray::WSServer</name>
+    <message>
+        <location filename="../ipc/wsserver.cpp" line="198"/>
+        <source>Pick folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ipc/wsserver.cpp" line="203"/>
+        <source>Pick file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Aria2Tray::Window</name>
     <message>
         <location filename="../win.cpp" line="24"/>

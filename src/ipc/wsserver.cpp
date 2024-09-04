@@ -148,6 +148,9 @@ void WSServer::onOptionsChange()
 
 void WSServer::onResultReady(struct response result, QWebSocket *client, QJsonObject req_obj)
 {
+    if (!isClientConnected(client))
+        return;
+
     if (!req_obj.contains("id")) {
         if (req_obj.contains(BATCH_KEY)) {
             auto batch_id                   = static_cast<quint32>(req_obj[BATCH_KEY].toInteger());
@@ -190,6 +193,16 @@ void WSServer::onResultReady(struct response result, QWebSocket *client, QJsonOb
     }
 }
 
+QString WSServer::filePickerFolderProxy()
+{
+    return QFileDialog::getExistingDirectory(nullptr, tr("Pick folder"), "");
+}
+
+QString WSServer::filePickerFileProxy(QString filter)
+{
+    return QFileDialog::getOpenFileName(nullptr, tr("Pick file"), "", filter);
+}
+
 void WSServer::processRequest(QJsonObject &req_obj, QWebSocket *client)
 {
     auto thread = new RequestProcessor(m_secret, req_obj, this);
@@ -199,9 +212,20 @@ void WSServer::processRequest(QJsonObject &req_obj, QWebSocket *client)
     thread->start();
 }
 
+bool WSServer::isClientConnected(QWebSocket *client)
+{
+    for (auto connected : m_clients) {
+        if (client == connected)
+            return true;
+    }
+
+    return false;
+}
+
 RequestProcessor::RequestProcessor(const QString &secret, QJsonObject req_obj, QObject *parent)
     : QThread(parent), m_secret(secret), m_req_obj(req_obj)
 {
+    m_wsserver = qobject_cast<WSServer *>(parent);
 }
 
 void RequestProcessor::run()
@@ -227,6 +251,8 @@ void RequestProcessor::run()
         emit resultReady(methodStatus(params), m_client, m_req_obj);
     } else if (method == "version") {
         emit resultReady(methodVersion(params), m_client, m_req_obj);
+    } else if (method == "filePicker") {
+        emit resultReady(methodFilePicker(params), m_client, m_req_obj);
     }
 }
 
@@ -437,6 +463,50 @@ struct response RequestProcessor::methodVersion(const QJsonArray &params)
     QJsonObject response_obj;
     response_obj.insert("version", A2T_VERSION);
     return {true, response_obj};
+}
+
+/**
+ * Open a file picker pop-up and return selected file/folder, empty string if cancelled.
+ *
+ * reference:
+ * filter -> https://doc.qt.io/qt-6/qfiledialog.html#getOpenFileName
+ *
+ * params:
+ * [secret, "folder" | "file", filter]
+ *
+ * result:
+ * {
+ *     selected: string,
+ * }
+ */
+struct response RequestProcessor::methodFilePicker(const QJsonArray &params)
+{
+    // check if delete is root then cancel
+    if (params[0].isUndefined()) {
+        return {false, JsonRPC::createError(JsonRPC::InvalidParams, "Missing argument")};
+    }
+
+    auto type = params[0].toString();
+    QString picked_path;
+
+    if (type == "folder") {
+        QMetaObject::invokeMethod(m_wsserver, "filePickerFolderProxy", Qt::BlockingQueuedConnection,
+                                  qReturnArg(picked_path));
+    } else if (type == "file") {
+        QMetaObject::invokeMethod(m_wsserver, "filePickerFileProxy", Qt::BlockingQueuedConnection,
+                                  qReturnArg(picked_path), params[1].toString());
+    } else {
+        return {false, JsonRPC::createError(JsonRPC::InvalidParams, "Invalid type")};
+    }
+
+    QJsonObject response_obj;
+    response_obj.insert("selected", picked_path);
+
+    struct response res = {
+        .success      = true,
+        .response_obj = response_obj,
+    };
+    return res;
 }
 
 /**

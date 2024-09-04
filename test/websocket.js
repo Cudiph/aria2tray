@@ -275,12 +275,62 @@ function status_test_assertion(msg) {
   }
 }
 
+function filePicker_test() {
+  const template = {
+    jsonrpc: "2.0",
+    method: "filePicker",
+  };
+  const reqs = [
+    {
+      ...template,
+      id: 6000,
+      params: [`token:${secret}`, "folder"],
+    },
+    {
+      ...template,
+      id: 6001,
+      params: [`token:${secret}`, "file"],
+    },
+    {
+      ...template,
+      id: 6002,
+      params: [`token:${secret}`, "file", "PNG image (*.png)"],
+    },
+    {
+      ...template,
+      id: 6003,
+      params: [`token:${secret}`, "file"], // cancel this to pass
+    },
+  ];
+  return reqs;
+}
+
+function filePicker_test_assert(msg) {
+  switch (msg.id) {
+    case 6000:
+      assert(msg.result?.selected);
+      break;
+    case 6001:
+      assert(msg.result?.selected);
+      break;
+    case 6002:
+      assert(msg.result?.selected);
+      break;
+    case 6003:
+      assert(!msg.result?.selected);
+      break;
+    default:
+      break;
+  }
+}
+
 function vibe_check(response) {
   general_test_assert(response);
   auth_test_assert(response);
   open_test_assert(response);
   delete_test_assert(response);
   status_test_assertion(response);
+  filePicker_test_assert(response);
 }
 
 ws.onopen = (event) => {
@@ -290,6 +340,7 @@ ws.onopen = (event) => {
     // ...open_test(),
     // ...delete_test(),
     // ...status_test(),
+    // ...filePicker_test(),
   ];
 
   for (const req of reqs) {
