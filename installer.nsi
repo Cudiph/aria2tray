@@ -34,7 +34,6 @@ Section "aria2Tray Installer"
 
   SetOutPath $INSTDIR
 
-  File "assets\icon.ico"
   File "LICENSE"
   File "${BUILD_DIR}\aria2tray.exe"
   File "${BUILD_DIR}\Qt6*.dll"
@@ -45,6 +44,8 @@ Section "aria2Tray Installer"
   File /r "${BUILD_DIR}\styles"
   File /r "${BUILD_DIR}\tls"
   File /r "${BUILD_DIR}\translations"
+  
+  File /nonfatal "${BUILD_DIR}\aria2c.exe"
 
   CreateDirectory "$SMPROGRAMS\${APPNAME}"
   CreateShortcut "$SMPROGRAMS\${APPNAME}\aria2Tray.lnk" "$INSTDIR\aria2tray.exe"
@@ -53,7 +54,7 @@ Section "aria2Tray Installer"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${APPNAME}"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /S"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayIcon" "$INSTDIR\icon.ico"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayIcon" "$INSTDIR\aria2tray.exe"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "Publisher" "Cudiph"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "HelpLink" "https://github.com/Cudiph/aria2Tray/issues"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayVersion" "${APPVERSION}"
