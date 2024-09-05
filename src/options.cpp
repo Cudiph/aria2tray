@@ -488,10 +488,10 @@ QStringList Options::buildArgs()
     for (int i = 0; i < customArgs.length(); i += 2) {
         QString key   = customArgs.at(i);
         QString value = customArgs.at(i + 1);
-        if (key.isEmpty() || value.isEmpty()) // skip if any empty
-            continue;
-        args += key;
-        args += value;
+        if (!key.isEmpty())
+            args << key;
+        if (!value.isEmpty())
+            args << value;
     }
 
     return args;
