@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     parser.process(app);
 
     if (parser.isSet("version")) {
-        std::cout << "Aria2Tray v" << A2T_VERSION << "\n";
+        std::cout << "aria2Tray v" << A2T_VERSION << "\n";
         return 0;
     }
 

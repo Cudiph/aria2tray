@@ -468,6 +468,8 @@ struct response RequestProcessor::methodVersion(const QJsonArray &params)
 /**
  * Open a file picker pop-up and return selected file/folder, empty string if cancelled.
  *
+ * Since version 0.2.0
+ *
  * reference:
  * filter -> https://doc.qt.io/qt-6/qfiledialog.html#getOpenFileName
  *

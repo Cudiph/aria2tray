@@ -68,6 +68,8 @@ return:
 
 Open a file picker pop-up and return selected file/folder, empty string if cancelled.
 
+Since version 0.2.0
+
 params:
 
 ```typescript
