@@ -215,7 +215,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="464"/>
+        <location filename="../options.cpp" line="466"/>
         <source>Certificate is not found, encryption will be disabled.</source>
         <translation type="unfinished"></translation>
     </message>

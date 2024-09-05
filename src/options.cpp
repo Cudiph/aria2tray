@@ -424,9 +424,11 @@ void Options::loadConfig()
     saveFolderEdit->setText(savedSaveFolder);
     certPathEdit->setText(savedCertPath);
     certCheck->setChecked(savedCertCheck);
-    runOnStartup->setChecked(savedRunOnStartup);
     advancedUser->setChecked(savedAdvancedUser);
     cmdArgsBuilderWidget->loadArgs(savedCmdArgs);
+
+    // should come last to let other config load first before starting
+    runOnStartup->setChecked(savedRunOnStartup);
 
     // save again in case some preprocessing produce different output
     saveConfig();
