@@ -154,13 +154,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="164"/>
+        <location filename="../options.cpp" line="165"/>
         <source>Force stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="165"/>
-        <location filename="../options.cpp" line="258"/>
+        <location filename="../options.cpp" line="166"/>
+        <location filename="../options.cpp" line="259"/>
         <source>START</source>
         <translation type="unfinished"></translation>
     </message>
@@ -170,52 +170,52 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="163"/>
+        <location filename="../options.cpp" line="164"/>
         <source>Reset to default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="167"/>
+        <location filename="../options.cpp" line="168"/>
         <source>Will also kill all aria2c process</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="215"/>
+        <location filename="../options.cpp" line="216"/>
         <source>Stopping...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="234"/>
+        <location filename="../options.cpp" line="235"/>
         <source>Force stopping...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="263"/>
+        <location filename="../options.cpp" line="264"/>
         <source>Starting...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="267"/>
+        <location filename="../options.cpp" line="268"/>
         <source>STOP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="369"/>
+        <location filename="../options.cpp" line="370"/>
         <source>Pick pkcs12 certificate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="370"/>
+        <location filename="../options.cpp" line="371"/>
         <source>PKCS12 certificate (*.p12 *.pfx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="378"/>
+        <location filename="../options.cpp" line="379"/>
         <source>Pick directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="466"/>
+        <location filename="../options.cpp" line="467"/>
         <source>Certificate is not found, encryption will be disabled.</source>
         <translation type="unfinished"></translation>
     </message>

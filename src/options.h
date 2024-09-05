@@ -42,11 +42,10 @@ public:
     QStringList buildArgs();
     void loadArgs(QStringList args);
 
-    QList<kvContainer_t *> kvContainerList;
-
 signals:
     void contentChanged(const QString &textChanged);
     void editingFinished();
+    void entryRemoved();
 
 private Q_SLOTS:
     void onItemTextChanged(const QString &textChanged);
@@ -56,6 +55,7 @@ private:
     void deleteEmpty();
 
     QVBoxLayout *rootLayout;
+    QList<kvContainer_t *> kvContainerList;
 };
 
 class Options : public QWidget {

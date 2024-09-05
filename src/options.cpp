@@ -150,6 +150,7 @@ QGroupBox *Options::cmdArgsLayout()
     cmdArgsGroupBox->setLayout(vLayout);
 
     connect(cmdArgsBuilderWidget, &CmdArgsBuilder::editingFinished, this, &Options::saveConfig);
+    connect(cmdArgsBuilderWidget, &CmdArgsBuilder::entryRemoved, this, &Options::saveConfig);
     connect(cmdArgsAddButton, &QPushButton::clicked, this, &Options::addNewArgs);
 
     cmdArgsGroupBox->hide();
@@ -562,18 +563,17 @@ void CmdArgsBuilder::removeAt(qsizetype i)
     item->container->deleteLater();
     delete item;
     kvContainerList.removeAt(i);
+    emit entryRemoved();
 }
 
 void CmdArgsBuilder::remove(CmdArgsBuilder::kvContainer_t *container)
 {
-    container->container->deleteLater();
     for (int i = 0; i < kvContainerList.length(); i++) {
         if (kvContainerList.at(i) == container) {
-            kvContainerList.removeAt(i);
+            removeAt(i);
             break;
         }
     }
-    delete container;
 }
 
 void CmdArgsBuilder::clear()
