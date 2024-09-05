@@ -7,7 +7,7 @@
 !define BUILD_DIR "dist\win\src"
 
 !ifndef APPVERSION
-!define APPVERSION "0.1.0"
+!define APPVERSION "0.2.0"
 !endif
 
 Name "${APPNAME}"

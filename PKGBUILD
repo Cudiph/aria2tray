@@ -1,6 +1,6 @@
 _pkgname=aria2tray
 pkgname="$_pkgname-git"
-pkgver=0.1.0
+pkgver=0.2.0
 pkgrel=1
 pkgdesc='Qt frontend for running aria2 in the background'
 arch=('x86_64')
