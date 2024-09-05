@@ -89,6 +89,7 @@ void Logs::log(const QString &msg, Process::LogLevel level)
     switch (level) {
     case Process::Critical:
     case Process::Error:
+    case Process::StdErr:
     case Process::Fatal:
         fgColor = Qt::red;
         break;
@@ -98,7 +99,6 @@ void Logs::log(const QString &msg, Process::LogLevel level)
     case Process::Unknown:
         fgColor = Qt::gray;
     case Process::StdOut:
-    case Process::StdErr:
     default:
         break;
     }
